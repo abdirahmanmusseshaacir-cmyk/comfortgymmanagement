@@ -1,0 +1,369 @@
+﻿@page
+@{ Layout = null; }
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Comfort Gym Login</title>
+    <style>
+        :root {
+            --bg-1: #171a1f;
+            --bg-2: #0d1016;
+            --panel: rgba(18, 20, 24, 0.85);
+            --panel-strong: rgba(12, 15, 19, 0.94);
+            --line: rgba(255,255,255,0.08);
+            --text: #f4f7fb;
+            --muted: #afb9c7;
+            --green: #bff45f;
+            --green-deep: #9ae63b;
+            --yellow: #1d3557;
+            --shadow: rgba(0,0,0,0.42);
+            --danger: #ff6b6b;
+        }
+
+        * { box-sizing: border-box; }
+
+        html, body {
+            margin: 0;
+            min-height: 100%;
+            font-family: Arial, Helvetica, sans-serif;
+            background:
+                radial-gradient(circle at top left, rgba(191,244,95,0.08), transparent 26%),
+                linear-gradient(135deg, var(--bg-2) 0%, #1a1d23 38%, #0d1016 100%);
+            color: var(--text);
+        }
+
+        body {
+            min-height: 100vh;
+            display: grid;
+            place-items: center;
+            padding: 28px;
+        }
+
+        .login-shell {
+            position: relative;
+            width: min(1200px, 100%);
+            min-height: 720px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .phone-stack {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 34px;
+            filter: drop-shadow(0 28px 28px rgba(0,0,0,0.35));
+        }
+
+        .phone {
+            position: relative;
+            width: 254px;
+            height: 520px;
+            border-radius: 34px;
+            background: linear-gradient(180deg, rgba(24,30,38,0.95), rgba(12,15,20,0.98));
+            border: 1px solid rgba(255,255,255,0.08);
+            overflow: hidden;
+            box-shadow: 0 22px 50px rgba(0,0,0,0.38);
+        }
+
+        .phone.left {
+            transform: translateX(-18px) rotate(-9deg);
+        }
+
+        .phone.right {
+            transform: translateX(18px) rotate(9deg);
+        }
+
+        .phone .screen {
+            position: absolute;
+            inset: 18px 16px 20px;
+            border-radius: 28px;
+            background: linear-gradient(180deg, #221e1d 0%, #0f1217 100%);
+            overflow: hidden;
+        }
+
+        .phone .photo {
+            position: absolute;
+            inset: 0;
+            background-size: cover;
+            background-position: center;
+            opacity: 0.95;
+        }
+
+        .phone.left .photo {
+            background-image:
+                linear-gradient(180deg, rgba(0,0,0,0.15), rgba(0,0,0,0.38)),
+                url('https://images.unsplash.com/photo-1517836357463-d25dfeac3438?auto=format&fit=crop&w=800&q=80');
+        }
+
+        .phone.right .photo {
+            background-image:
+                linear-gradient(180deg, rgba(0,0,0,0.1), rgba(0,0,0,0.35)),
+                url('https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&w=800&q=80');
+        }
+
+        .phone .overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(180deg, rgba(0,0,0,0.08), rgba(0,0,0,0.42));
+        }
+
+        .brand-badge {
+            position: absolute;
+            left: 24px;
+            top: 26px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 82px;
+            height: 82px;
+            border-radius: 22px;
+            background: linear-gradient(135deg, #d8ff7b, #a6ef34 59%, #84d822);
+            color: #0a0d12;
+            font-weight: 900;
+            font-size: 16px;
+            letter-spacing: 0.02em;
+            box-shadow: 0 14px 22px rgba(165, 239, 52, 0.35);
+        }
+
+        .content-card {
+            position: relative;
+            z-index: 2;
+            width: min(420px, 92vw);
+            padding: 22px 24px 20px;
+            background: rgba(17, 21, 27, 0.8);
+            border: 1px solid var(--line);
+            border-radius: 28px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 30px 60px rgba(0,0,0,0.38);
+        }
+
+        .brand-row {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 14px;
+        }
+
+        .brand-mark {
+            width: 62px;
+            height: 62px;
+            border-radius: 18px;
+            background: linear-gradient(135deg, var(--green) 0%, #d8ff7b 40%, #64d72b 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 900;
+            color: #0b1117;
+            box-shadow: 0 12px 28px rgba(191,244,95,0.34);
+            font-size: 13px;
+        }
+
+        .title {
+            margin: 0;
+            text-align: center;
+            font-weight: 900;
+            font-size: clamp(32px, 4vw, 42px);
+            letter-spacing: -0.06em;
+        }
+
+        .subtitle {
+            margin: 12px 0 0;
+            color: var(--muted);
+            text-align: center;
+            font-size: 14px;
+            letter-spacing: 0.04em;
+        }
+
+        .form-box {
+            margin-top: 32px;
+        }
+
+        .field {
+            margin-bottom: 18px;
+        }
+
+        .field input {
+            width: 100%;
+            height: 54px;
+            border-radius: 16px;
+            border: 1px solid rgba(255,255,255,0.08);
+            background: rgba(255,255,255,0.04);
+            color: var(--text);
+            padding: 0 18px;
+            font-size: 15px;
+            outline: none;
+            transition: border-color .2s ease, box-shadow .2s ease, background .2s ease;
+        }
+
+        .field input::placeholder {
+            color: #8b96a3;
+        }
+
+        .field input:focus {
+            border-color: rgba(191,244,95,0.75);
+            box-shadow: 0 0 0 3px rgba(191,244,95,0.12);
+            background: rgba(255,255,255,0.06);
+        }
+
+        .login-btn {
+            width: 100%;
+            height: 58px;
+            border: none;
+            border-radius: 16px;
+            background: linear-gradient(135deg, var(--green) 0%, #d4ff66 35%, #a9ef42 100%);
+            color: #0b1218;
+            font-size: 16px;
+            font-weight: 900;
+            letter-spacing: 0.04em;
+            cursor: pointer;
+            box-shadow: 0 18px 24px rgba(166, 237, 57, 0.25);
+            transition: transform .15s ease, box-shadow .15s ease;
+        }
+
+        .login-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 20px 28px rgba(166, 237, 57, 0.3);
+        }
+
+        .helper-row {
+            margin-top: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            color: var(--muted);
+            font-size: 12px;
+        }
+
+        .checkbox {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .checkbox input {
+            accent-color: var(--green);
+        }
+
+        .link {
+            color: #dff7a9;
+            text-decoration: none;
+        }
+
+        #msg {
+            margin-top: 16px;
+            min-height: 18px;
+        }
+
+        .notice {
+            border-radius: 12px;
+            padding: 10px 12px;
+            font-size: 13px;
+            text-align: center;
+        }
+
+        .notice.error {
+            background: rgba(255,94,94,0.12);
+            border: 1px solid rgba(255,107,107,0.35);
+            color: #ffb5b5;
+        }
+
+        @@media (max-width: 760px) {
+            body {
+                padding: 18px;
+            }
+
+            .login-shell {
+                min-height: auto;
+                width: 100%;
+            }
+
+            .phone-stack {
+                opacity: 0.3;
+                transform: scale(0.8);
+            }
+
+            .content-card {
+                width: min(100%, 420px);
+                padding: 20px 18px 18px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="login-shell">
+        <div class="phone-stack" aria-hidden="true">
+            <div class="phone left">
+                <div class="screen">
+                    <div class="photo"></div>
+                    <div class="overlay"></div>
+                    <div class="brand-badge">COMFORT GYM CG</div>
+                </div>
+            </div>
+
+            <div class="phone right">
+                <div class="screen">
+                    <div class="photo"></div>
+                    <div class="overlay"></div>
+                    <div class="brand-badge">COMFORT GYM CG</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="content-card">
+            <div class="brand-row">
+                <div class="brand-mark">C</div>
+            </div>
+
+            <h1 class="title">COMFORT GYM CG</h1>
+            <p class="subtitle">Welcome back â€¢ Sign in to continue</p>
+
+            <form id="loginForm" class="form-box" autocomplete="off">
+                <div class="field">
+                    <input name="email" type="email" placeholder="Email address" required>
+                </div>
+
+                <div class="field">
+                    <input name="password" type="password" placeholder="Password" required>
+                </div>
+
+                <button type="submit" class="login-btn">Sign In</button>
+
+                <div class="helper-row">
+                    <label class="checkbox"><input type="checkbox"> Remember me</label>
+                    <a href="#" class="link">Forgot password?</a>
+                </div>
+            </form>
+
+            <div id="msg"></div>
+        </div>
+    </div>
+
+    <script>
+        loginForm.onsubmit = async e => {
+            e.preventDefault();
+            const f = e.target;
+            const r = await fetch('/api/auth/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email: f.email.value, password: f.password.value })
+            });
+
+            if (r.ok) {
+                const u = await r.json();
+                localStorage.setItem('gymUser', JSON.stringify(u));
+                location.href = u.role === 'Trainer' ? '/Trainer/Dashboard' : u.role === 'Member' ? '/Member/Dashboard' : '/Admin/Dashboard';
+            } else {
+                msg.innerHTML = '<div class="notice error">Invalid email or password</div>';
+            }
+        };
+    </script>
+</body>
+</html>
+

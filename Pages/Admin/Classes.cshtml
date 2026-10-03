@@ -1,0 +1,2153 @@
+﻿@page
+@{
+    ViewData["Title"] = "Classes";
+}
+
+<div class="classes-page">
+
+    <!-- HERO -->
+    <section class="classes-hero">
+
+        <div class="classes-hero-overlay"></div>
+
+        <div class="classes-hero-content">
+
+            <span class="classes-label">
+                COMFORT GYM MANAGEMENT SYSTEM
+            </span>
+
+            <h1>
+                Fitness Classes
+            </h1>
+
+            <p>
+                Manage gym classes, trainers, schedules and capacity
+                to provide members with an organized and effective
+                fitness experience.
+            </p>
+
+            <div class="hero-actions">
+
+                <button type="button"
+                        class="add-class-btn"
+                        onclick="openAddClassModal()">
+
+                    <span>ï¼‹</span>
+                    Add New Class
+
+                </button>
+
+                <button type="button"
+                        class="refresh-class-btn"
+                        onclick="loadClasses()">
+
+                    â†» Refresh
+
+                </button>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- INFORMATION CARDS -->
+    <section class="class-info-section">
+
+        <div class="class-info-card" data-card="schedule" tabindex="0" role="button" aria-label="Open class scheduling details">
+
+            <div class="class-info-image">
+                <div class="class-card-overlay"></div>
+                <img src="/images/class-scheduling.svg"
+                     alt="Class Scheduling">
+            </div>
+
+            <div class="class-info-content">
+
+                <div class="info-header-row">
+                    <span class="info-number">01</span>
+                    <span class="info-badge"><span class="info-badge-icon">ðŸ“…</span> Live</span>
+                </div>
+
+                <h4>
+                    Class Scheduling
+                </h4>
+
+                <p id="classScheduleSummary">
+                    Loading schedule information...
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="class-info-card" data-card="trainer" tabindex="0" role="button" aria-label="Open trainer details">
+
+            <div class="class-info-image image-trainer">
+                <div class="class-card-overlay"></div>
+                <img src="/images/professional-trainer.svg"
+                     alt="Professional Trainer">
+            </div>
+
+            <div class="class-info-content">
+
+                <div class="info-header-row">
+                    <span class="info-number">02</span>
+                    <span class="info-badge badge-trainer"><span class="info-badge-icon">ðŸ‘¨â€ðŸ«</span> Active</span>
+                </div>
+
+                <h4>
+                    Professional Trainers
+                </h4>
+
+                <p id="trainerSummary">
+                    Loading trainer information...
+                </p>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- MANAGEMENT PANEL -->
+    <section class="class-management-panel">
+
+        <div class="class-panel-header">
+
+            <div class="class-panel-title">
+
+                <div class="class-panel-icon">
+                    âœ“
+                </div>
+
+                <div>
+
+                    <h3>
+                        Class Management
+                    </h3>
+
+                    <p>
+                        View and manage all registered fitness classes.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="panel-actions">
+
+                <button type="button"
+                        class="class-refresh-btn"
+                        onclick="loadClasses()">
+
+                    â†» Refresh Classes
+
+                </button>
+
+                <button type="button"
+                        class="class-add-btn"
+                        onclick="openAddClassModal()">
+
+                    ï¼‹ Add Class
+
+                </button>
+
+            </div>
+
+        </div>
+
+
+        <!-- TABLE -->
+        <div class="class-table-container">
+
+            <div class="class-table-header">
+
+                <div>
+
+                    <h3>
+                        Class Directory
+                    </h3>
+
+                    <p>
+                        Registered fitness classes and their schedules
+                    </p>
+
+                </div>
+
+                <div class="class-status">
+
+                    <span class="status-dot"></span>
+
+                    Live Data
+
+                </div>
+
+            </div>
+
+
+            <div class="class-table-wrapper">
+
+                <table class="classes-table">
+
+                    <thead>
+
+                        <tr>
+
+                            <th>ID</th>
+
+                            <th>Class Name</th>
+
+                            <th>Trainer</th>
+
+                            <th>Schedule</th>
+
+                            <th>Capacity</th>
+
+                            <th>Status</th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody id="genericRows">
+
+                        <tr>
+
+                            <td colspan="6"
+                                class="class-loading">
+
+                                Loading classes...
+
+                            </td>
+
+                        </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </section>
+
+</div>
+
+<div id="classDetailPopup" class="detail-popup" aria-modal="true" role="dialog">
+    <div class="detail-popup-card">
+        <div class="detail-popup-header">
+            <div class="detail-popup-heading">
+                <span class="detail-popup-icon" id="classDetailIcon">ðŸ“‹</span>
+                <h3 id="classDetailTitle">Details</h3>
+            </div>
+            <button type="button" id="classDetailClose" class="detail-popup-close" aria-label="Close details">Ã—</button>
+        </div>
+        <div class="detail-popup-body" id="classDetailBody"></div>
+    </div>
+</div>
+
+<!-- ADD CLASS MODAL -->
+<div id="addClassModal"
+     class="class-modal">
+
+    <div class="class-modal-overlay"
+         onclick="closeAddClassModal()">
+    </div>
+
+
+    <div class="class-modal-box">
+
+        <div class="class-modal-header">
+
+            <div>
+
+                <span>
+                    COMFORT GYM
+                </span>
+
+                <h2>
+                    Add New Class
+                </h2>
+
+                <p>
+                    Create a new fitness class and assign a trainer.
+                </p>
+
+            </div>
+
+            <button type="button"
+                    class="modal-close"
+                    onclick="closeAddClassModal()">
+
+                Ã—
+
+            </button>
+
+        </div>
+
+
+        <form id="addClassForm"
+              onsubmit="addClass(event)">
+
+            <div class="form-grid">
+
+                <div class="form-group">
+
+                    <label>
+                        Class Name
+                    </label>
+
+                    <input type="text"
+                           id="className"
+                           name="className"
+                           placeholder="e.g. Yoga"
+                           required>
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label>
+                        Trainer
+                    </label>
+
+                    <select id="trainer" name="trainer">
+                        <option value="">Select Trainer...</option>
+                    </select>
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label>
+                        Time
+                    </label>
+
+                    <input type="time"
+                           id="classTime"
+                           name="classTime"
+                           required>
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label>
+                        Capacity
+                    </label>
+
+                    <input type="number"
+                           id="capacity"
+                           name="capacity"
+                           placeholder="e.g. 20"
+                           min="1"
+                           required>
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label>
+                        Session Type
+                    </label>
+
+                    <select id="classType"
+                            name="classType">
+
+                        <option value="Morning">
+                            Morning
+                        </option>
+
+                        <option value="Afternoon">
+                            Afternoon
+                        </option>
+
+                        <option value="Evening">
+                            Evening
+                        </option>
+
+                    </select>
+
+                </div>
+
+                <div class="form-group">
+
+                    <label>
+                        Start Time
+                    </label>
+
+                    <select id="startTime"
+                            name="startTime">
+                        <option value="08:00 AM">08:00 AM</option>
+                        <option value="09:00 AM">09:00 AM</option>
+                        <option value="10:00 AM">10:00 AM</option>
+                        <option value="11:00 AM">11:00 AM</option>
+                        <option value="12:00 PM">12:00 PM</option>
+                        <option value="01:00 PM">01:00 PM</option>
+                        <option value="02:00 PM">02:00 PM</option>
+                        <option value="03:00 PM">03:00 PM</option>
+                        <option value="04:00 PM">04:00 PM</option>
+                        <option value="05:00 PM">05:00 PM</option>
+                        <option value="06:00 PM">06:00 PM</option>
+                        <option value="07:00 PM">07:00 PM</option>
+                        <option value="08:00 PM">08:00 PM</option>
+                    </select>
+
+                </div>
+
+                <div class="form-group">
+
+                    <label>
+                        End Time
+                    </label>
+
+                    <select id="endTime"
+                            name="endTime">
+                        <option value="10:00 AM">10:00 AM</option>
+                        <option value="11:00 AM">11:00 AM</option>
+                        <option value="12:00 PM">12:00 PM</option>
+                        <option value="01:00 PM">01:00 PM</option>
+                        <option value="02:00 PM">02:00 PM</option>
+                        <option value="03:00 PM">03:00 PM</option>
+                        <option value="04:00 PM">04:00 PM</option>
+                        <option value="05:00 PM">05:00 PM</option>
+                        <option value="06:00 PM">06:00 PM</option>
+                        <option value="07:00 PM">07:00 PM</option>
+                        <option value="08:00 PM">08:00 PM</option>
+                        <option value="09:00 PM">09:00 PM</option>
+                    </select>
+
+                </div>
+
+                <div class="form-group">
+
+                    <label>
+                        Status
+                    </label>
+
+                    <select id="classStatus"
+                            name="classStatus">
+
+                        <option value="Pending" selected>
+                            Pending
+                        </option>
+
+                        <option value="Active">
+                            Active
+                        </option>
+
+                        <option value="Inactive">
+                            Inactive
+                        </option>
+
+                    </select>
+
+                </div>
+
+            </div>
+
+
+            <div id="classMessage"
+                 class="class-message">
+            </div>
+
+
+            <div class="modal-form-actions">
+
+                <button type="button"
+                        class="cancel-btn"
+                        onclick="closeAddClassModal()">
+
+                    Cancel
+
+                </button>
+
+                <button type="submit"
+                        class="save-class-btn">
+
+                    <span>ï¼‹</span>
+                    Save Class
+
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+<!-- EDIT CLASS MODAL -->
+<div id="editClassModal"
+     class="class-modal">
+
+    <div class="class-modal-overlay"
+         onclick="closeEditClassModal()">
+    </div>
+
+    <div class="class-modal-box">
+
+        <div class="class-modal-header">
+
+            <div>
+
+                <span>
+                    COMFORT GYM
+                </span>
+
+                <h2>
+                    Edit Class
+                </h2>
+
+                <p>
+                    Update class details, schedule and trainer assignment.
+                </p>
+
+            </div>
+
+            <button type="button"
+                    class="modal-close"
+                    onclick="closeEditClassModal()">
+
+                Ã—
+
+            </button>
+
+        </div>
+
+        <form id="editClassForm"
+              onsubmit="saveClassEdits(event)">
+
+            <input type="hidden" id="editClassId" name="editClassId">
+
+            <div class="form-grid">
+
+                <div class="form-group">
+
+                    <label>
+                        Class Name
+                    </label>
+
+                    <input type="text"
+                           id="editClassName"
+                           name="editClassName"
+                           placeholder="e.g. Yoga"
+                           required>
+
+                </div>
+
+                <div class="form-group">
+
+                    <label>
+                        Trainer
+                    </label>
+
+                    <select id="editTrainer" name="editTrainer">
+                        <option value="">Select Trainer...</option>
+                    </select>
+
+                </div>
+
+                <div class="form-group">
+
+                    <label>
+                        Session Type
+                    </label>
+
+                    <select id="editClassType"
+                            name="editClassType">
+
+                        <option value="Morning">Morning</option>
+                        <option value="Afternoon">Afternoon</option>
+                        <option value="Evening">Evening</option>
+                    </select>
+
+                </div>
+
+                <div class="form-group">
+
+                    <label>
+                        Start Time
+                    </label>
+
+                    <select id="editStartTime"
+                            name="editStartTime">
+                        <option value="08:00 AM">08:00 AM</option>
+                        <option value="09:00 AM">09:00 AM</option>
+                        <option value="10:00 AM">10:00 AM</option>
+                        <option value="11:00 AM">11:00 AM</option>
+                        <option value="12:00 PM">12:00 PM</option>
+                        <option value="01:00 PM">01:00 PM</option>
+                        <option value="02:00 PM">02:00 PM</option>
+                        <option value="03:00 PM">03:00 PM</option>
+                        <option value="04:00 PM">04:00 PM</option>
+                        <option value="05:00 PM">05:00 PM</option>
+                        <option value="06:00 PM">06:00 PM</option>
+                        <option value="07:00 PM">07:00 PM</option>
+                        <option value="08:00 PM">08:00 PM</option>
+                    </select>
+
+                </div>
+
+                <div class="form-group">
+
+                    <label>
+                        End Time
+                    </label>
+
+                    <select id="editEndTime"
+                            name="editEndTime">
+                        <option value="10:00 AM">10:00 AM</option>
+                        <option value="11:00 AM">11:00 AM</option>
+                        <option value="12:00 PM">12:00 PM</option>
+                        <option value="01:00 PM">01:00 PM</option>
+                        <option value="02:00 PM">02:00 PM</option>
+                        <option value="03:00 PM">03:00 PM</option>
+                        <option value="04:00 PM">04:00 PM</option>
+                        <option value="05:00 PM">05:00 PM</option>
+                        <option value="06:00 PM">06:00 PM</option>
+                        <option value="07:00 PM">07:00 PM</option>
+                        <option value="08:00 PM">08:00 PM</option>
+                        <option value="09:00 PM">09:00 PM</option>
+                    </select>
+
+                </div>
+
+                <div class="form-group">
+
+                    <label>
+                        Capacity
+                    </label>
+
+                    <input type="number"
+                           id="editCapacity"
+                           name="editCapacity"
+                           placeholder="e.g. 20"
+                           min="1"
+                           required>
+
+                </div>
+
+                <div class="form-group">
+
+                    <label>
+                        Status
+                    </label>
+
+                    <select id="editClassStatus"
+                            name="editClassStatus">
+
+                        <option value="Pending">Pending</option>
+                        <option value="Active">Active</option>
+                        <option value="Inactive">Inactive</option>
+                    </select>
+
+                </div>
+
+            </div>
+
+            <div id="editClassMessage"
+                 class="class-message">
+            </div>
+
+            <div class="modal-form-actions">
+
+                <button type="button"
+                        class="cancel-btn"
+                        onclick="closeEditClassModal()">
+
+                    Cancel
+
+                </button>
+
+                <button type="submit"
+                        class="save-class-btn">
+
+                    <span>âœ“</span>
+                    Update Class
+
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+
+<style>
+
+    * {
+        box-sizing: border-box;
+    }
+
+    .classes-page {
+        width: 100%;
+        padding-bottom: 50px;
+        background: #f5f7fa;
+    }
+
+
+    /* HERO */
+
+    .classes-hero {
+        position: relative;
+        min-height: 390px;
+        display: flex;
+        align-items: center;
+        overflow: hidden;
+
+        background-image:
+            url('/images/gym-classes-hero.svg');
+
+        background-size: cover;
+        background-position: center;
+    }
+
+    .classes-hero-overlay {
+        position: absolute;
+        inset: 0;
+
+        background:
+            linear-gradient(
+                90deg,
+                rgba(7, 15, 27, .92),
+                rgba(7, 15, 27, .65),
+                rgba(7, 15, 27, .25)
+            );
+    }
+
+    .classes-hero-content {
+        position: relative;
+        z-index: 2;
+
+        max-width: 850px;
+        padding: 70px 7%;
+        color: white;
+    }
+
+    .classes-label {
+        display: inline-block;
+
+        padding: 8px 15px;
+        margin-bottom: 18px;
+
+        border: 1px solid rgba(255,255,255,.35);
+        border-radius: 30px;
+
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 1.5px;
+    }
+
+    .classes-hero h1 {
+        margin: 0 0 15px;
+
+        font-size: 52px;
+        font-weight: 800;
+        line-height: 1.1;
+    }
+
+    .classes-hero p {
+        max-width: 650px;
+
+        margin: 0;
+
+        color: rgba(255,255,255,.85);
+
+        font-size: 17px;
+        line-height: 1.8;
+    }
+
+
+    /* HERO BUTTONS */
+
+    .hero-actions {
+        display: flex;
+        gap: 12px;
+        margin-top: 28px;
+    }
+
+    .add-class-btn,
+    .refresh-class-btn {
+        border: none;
+        border-radius: 9px;
+
+        padding: 13px 20px;
+
+        font-size: 14px;
+        font-weight: 700;
+
+        cursor: pointer;
+
+        transition: .25s;
+    }
+
+    .add-class-btn {
+        background: #1d3557;
+        color: white;
+    }
+
+    .add-class-btn:hover {
+        background: #0d2349;
+        transform: translateY(-2px);
+    }
+
+    .refresh-class-btn {
+        background: rgba(255,255,255,.12);
+        border: 1px solid rgba(255,255,255,.3);
+        color: white;
+    }
+
+    .refresh-class-btn:hover {
+        background: rgba(255,255,255,.2);
+    }
+
+
+    /* INFO CARDS */
+
+    .class-info-section {
+        display: grid;
+
+        grid-template-columns: repeat(2, minmax(280px, 1fr));
+
+        gap: 22px;
+
+        padding: 35px 7%;
+    }
+
+    .class-info-card {
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+
+        background: linear-gradient(180deg, #ffffff 0%, #fffaf7 100%);
+
+        border-radius: 18px;
+
+        border: 1px solid #edf0f5;
+
+        box-shadow:
+            0 14px 35px rgba(15, 23, 42, .08);
+
+        transition: .3s ease;
+        cursor: pointer;
+    }
+
+    .class-info-card:hover {
+        transform: translateY(-6px);
+
+        box-shadow:
+            0 18px 40px rgba(15, 23, 42, .12);
+    }
+
+    .class-info-card:focus-visible {
+        outline: 3px solid rgba(255, 107, 53, 0.32);
+        outline-offset: 2px;
+    }
+
+    .class-info-image {
+        position: relative;
+        height: 180px;
+        overflow: hidden;
+        background: linear-gradient(135deg, #fff1eb 0%, #ffe7dc 100%);
+    }
+
+    .class-card-overlay {
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(180deg, rgba(255,255,255,0.12), rgba(15,23,42,0.15));
+    }
+
+    .class-info-image img {
+        position: relative;
+        z-index: 1;
+        width: 100%;
+        height: 100%;
+
+        object-fit: cover;
+
+        transition: .4s;
+    }
+
+    .class-info-card:hover
+    .class-info-image img {
+        transform: scale(1.06);
+    }
+
+    .class-info-content {
+        padding: 22px 22px 24px;
+    }
+
+    .info-header-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        margin-bottom: 10px;
+    }
+
+    .info-number {
+        color: #1d3557;
+
+        font-size: 12px;
+        font-weight: 900;
+        letter-spacing: 1.5px;
+    }
+
+    .info-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 7px 10px;
+        border-radius: 999px;
+        background: #ecfdf5;
+        color: #15803d;
+        font-size: 11px;
+        font-weight: 700;
+    }
+
+    .badge-trainer {
+        background: #eef2ff;
+        color: #4338ca;
+    }
+
+    .info-badge-icon {
+        font-size: 12px;
+    }
+
+    .class-info-content h4 {
+        margin: 0 0 10px;
+
+        font-size: 22px;
+        line-height: 1.2;
+
+        color: #182230;
+    }
+
+    .class-info-content p {
+        margin: 0;
+
+        color: #5f6c7a;
+
+        font-size: 14px;
+        line-height: 1.7;
+    }
+
+
+    /* MANAGEMENT */
+
+    .class-management-panel {
+        margin: 0 7%;
+
+        background: white;
+
+        border: 1px solid #e5e7eb;
+
+        border-radius: 16px;
+
+        box-shadow:
+            0 10px 30px rgba(15, 23, 42, .06);
+
+        overflow: hidden;
+    }
+
+    .class-panel-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+
+        padding: 25px 28px;
+
+        border-bottom: 1px solid #edf0f4;
+    }
+
+    .class-panel-title {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+    }
+
+    .class-panel-icon {
+        width: 46px;
+        height: 46px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        border-radius: 12px;
+
+        background: #fff1eb;
+
+        color: #1d3557;
+
+        font-size: 22px;
+        font-weight: 800;
+    }
+
+    .class-panel-title h3 {
+        margin: 0 0 4px;
+
+        color: #172033;
+
+        font-size: 20px;
+    }
+
+    .class-panel-title p {
+        margin: 0;
+
+        color: #8a93a3;
+
+        font-size: 13px;
+    }
+
+    .panel-actions {
+        display: flex;
+        gap: 10px;
+    }
+
+    .class-refresh-btn,
+    .class-add-btn {
+        border: none;
+
+        padding: 11px 16px;
+
+        border-radius: 8px;
+
+        cursor: pointer;
+
+        font-size: 13px;
+        font-weight: 700;
+    }
+
+    .class-refresh-btn {
+        background: #f1f3f6;
+        color: #384152;
+    }
+
+    .class-add-btn {
+        background: #1d3557;
+        color: white;
+    }
+
+    .class-add-btn:hover {
+        background: #0d2349;
+    }
+
+
+    /* TABLE */
+
+    .class-table-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+
+        padding: 25px 28px 18px;
+    }
+
+    .class-table-header h3 {
+        margin: 0 0 5px;
+
+        color: #1c2636;
+    }
+
+    .class-table-header p {
+        margin: 0;
+
+        color: #8992a3;
+
+        font-size: 13px;
+    }
+
+    .class-status {
+        display: flex;
+        align-items: center;
+        gap: 7px;
+
+        padding: 8px 12px;
+
+        border-radius: 30px;
+
+        background: #ecfdf3;
+
+        color: #18864b;
+
+        font-size: 12px;
+        font-weight: 700;
+    }
+
+    .detail-popup {
+        position: fixed;
+        inset: 0;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+        background: rgba(15, 23, 42, 0.55);
+        backdrop-filter: blur(4px);
+        z-index: 9999;
+    }
+
+    .detail-popup.active {
+        display: flex;
+    }
+
+    .detail-popup-card {
+        width: min(680px, 100%);
+        max-height: 80vh;
+        overflow-y: auto;
+        background: white;
+        border-radius: 18px;
+        box-shadow: 0 30px 80px rgba(0,0,0,0.25);
+        padding: 0;
+    }
+
+    .detail-popup-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 22px 24px;
+        border-bottom: 1px solid #edf0f4;
+    }
+
+    .detail-popup-heading {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .detail-popup-icon {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 42px;
+        height: 42px;
+        border-radius: 12px;
+        background: linear-gradient(135deg, #fff1eb 0%, #ffe4d6 100%);
+        color: #1d3557;
+        font-size: 20px;
+        box-shadow: inset 0 0 0 1px rgba(255, 107, 53, 0.08);
+    }
+
+    .detail-popup-header h3 {
+        margin: 0;
+        color: #172033;
+        font-size: 22px;
+    }
+
+    .detail-popup-close {
+        border: none;
+        background: #f2f4f7;
+        color: #475467;
+        width: 38px;
+        height: 38px;
+        border-radius: 50%;
+        font-size: 24px;
+        cursor: pointer;
+    }
+
+    .detail-popup-body {
+        padding: 20px 24px 24px;
+    }
+
+    .detail-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        display: grid;
+        gap: 14px;
+    }
+
+    .detail-list li {
+        display: flex;
+        align-items: flex-start;
+        gap: 12px;
+        background: linear-gradient(180deg, #f8fafc 0%, #ffffff 100%);
+        border: 1px solid #edf0f4;
+        border-radius: 14px;
+        padding: 16px;
+        color: #374151;
+        line-height: 1.8;
+        box-shadow: 0 8px 20px rgba(15, 23, 42, 0.03);
+    }
+
+    .detail-item-icon {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 42px;
+        height: 42px;
+        min-width: 42px;
+        border-radius: 12px;
+        background: #eef2ff;
+        color: #4338ca;
+        font-size: 18px;
+        box-shadow: inset 0 0 0 1px rgba(67, 56, 202, 0.05);
+    }
+
+    .detail-item-copy {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        width: 100%;
+    }
+
+    .detail-list strong {
+        color: #1f2937;
+        font-size: 15px;
+    }
+
+    .detail-list span {
+        display: block;
+        color: #4b5563;
+        font-size: 14px;
+    }
+
+    .status-dot {
+        width: 8px;
+        height: 8px;
+
+        border-radius: 50%;
+
+        background: #22c55e;
+    }
+
+    .class-table-wrapper {
+        width: 100%;
+        overflow-x: auto;
+    }
+
+    .classes-table {
+        width: 100%;
+
+        border-collapse: collapse;
+    }
+
+    .classes-table th {
+        padding: 15px 25px;
+
+        text-align: left;
+
+        background: #f8fafc;
+
+        color: #697386;
+
+        font-size: 12px;
+
+        text-transform: uppercase;
+
+        letter-spacing: .5px;
+    }
+
+    .classes-table td {
+        padding: 18px 25px;
+
+        border-top: 1px solid #edf0f4;
+
+        color: #374151;
+
+        font-size: 14px;
+    }
+
+    .classes-table tbody tr:hover {
+        background: #fafbfc;
+    }
+
+    .class-loading {
+        text-align: center !important;
+
+        padding: 45px !important;
+
+        color: #8b95a5 !important;
+    }
+
+    .class-badge {
+        display: inline-block;
+
+        padding: 5px 10px;
+
+        border-radius: 20px;
+
+        font-size: 11px;
+
+        font-weight: 700;
+    }
+
+    .class-badge.pending {
+        background: #fff7ed;
+        color: #c2410c;
+    }
+
+    .class-badge.active {
+        background: #ecfdf3;
+        color: #15803d;
+    }
+
+    .class-badge.inactive {
+        background: #f3f4f6;
+        color: #4b5563;
+    }
+
+    .mini-edit-btn {
+        margin-left: 10px;
+        padding: 5px 10px;
+        border: none;
+        border-radius: 8px;
+        background: #e0f2fe;
+        color: #075985;
+        cursor: pointer;
+        font-size: 11px;
+        font-weight: 700;
+    }
+
+    .mini-edit-btn:hover {
+        background: #bae6fd;
+    }
+
+
+    /* MODAL */
+
+    .class-modal {
+        position: fixed;
+
+        inset: 0;
+
+        z-index: 9999;
+
+        display: none;
+
+        align-items: center;
+        justify-content: center;
+
+        padding: 20px;
+    }
+
+    .class-modal.active {
+        display: flex;
+    }
+
+    .class-modal-overlay {
+        position: absolute;
+
+        inset: 0;
+
+        background: rgba(15, 23, 42, .65);
+
+        backdrop-filter: blur(4px);
+    }
+
+    .class-modal-box {
+        position: relative;
+
+        z-index: 2;
+
+        width: 100%;
+        max-width: 650px;
+
+        max-height: 90vh;
+
+        overflow-y: auto;
+
+        background: white;
+
+        border-radius: 18px;
+
+        box-shadow:
+            0 30px 80px rgba(0,0,0,.25);
+    }
+
+    .class-modal-header {
+        display: flex;
+
+        justify-content: space-between;
+
+        padding: 25px 28px;
+
+        border-bottom: 1px solid #edf0f4;
+    }
+
+    .class-modal-header span {
+        color: #1d3557;
+
+        font-size: 11px;
+        font-weight: 800;
+
+        letter-spacing: 1px;
+    }
+
+    .class-modal-header h2 {
+        margin: 5px 0;
+
+        color: #172033;
+    }
+
+    .class-modal-header p {
+        margin: 0;
+
+        color: #8b95a5;
+
+        font-size: 13px;
+    }
+
+    .modal-close {
+        width: 38px;
+        height: 38px;
+
+        border: none;
+
+        border-radius: 50%;
+
+        background: #f2f4f7;
+
+        color: #475467;
+
+        font-size: 25px;
+
+        cursor: pointer;
+    }
+
+    .modal-close:hover {
+        background: #fee2e2;
+
+        color: #dc2626;
+    }
+
+
+    /* FORM */
+
+    #addClassForm {
+        padding: 28px;
+    }
+
+    .form-grid {
+        display: grid;
+
+        grid-template-columns:
+            repeat(2, 1fr);
+
+        gap: 18px;
+    }
+
+    .form-group {
+        display: flex;
+
+        flex-direction: column;
+
+        gap: 7px;
+    }
+
+    .form-group label {
+        color: #344054;
+
+        font-size: 13px;
+
+        font-weight: 700;
+    }
+
+    .form-group input,
+    .form-group select {
+        width: 100%;
+
+        padding: 12px 13px;
+
+        border: 1px solid #d9dee7;
+
+        border-radius: 8px;
+
+        outline: none;
+
+        font-size: 14px;
+
+        background: white;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus {
+        border-color: #1d3557;
+
+        box-shadow:
+            0 0 0 3px rgba(255,107,53,.1);
+    }
+
+    .class-message {
+        display: none;
+
+        margin-top: 18px;
+
+        padding: 12px;
+
+        border-radius: 8px;
+
+        font-size: 13px;
+    }
+
+    .class-message.success {
+        display: block;
+
+        background: #ecfdf3;
+
+        color: #15803d;
+    }
+
+    .class-message.error {
+        display: block;
+
+        background: #fef2f2;
+
+        color: #dc2626;
+    }
+
+    .modal-form-actions {
+        display: flex;
+
+        justify-content: flex-end;
+
+        gap: 10px;
+
+        margin-top: 25px;
+
+        padding-top: 20px;
+
+        border-top: 1px solid #edf0f4;
+    }
+
+    .cancel-btn,
+    .save-class-btn {
+        border: none;
+
+        padding: 12px 20px;
+
+        border-radius: 8px;
+
+        cursor: pointer;
+
+        font-weight: 700;
+    }
+
+    .cancel-btn {
+        background: #f2f4f7;
+
+        color: #344054;
+    }
+
+    .save-class-btn {
+        background: #1d3557;
+
+        color: white;
+    }
+
+    .save-class-btn:hover {
+        background: #0d2349;
+    }
+
+
+    /* RESPONSIVE */
+
+    @@media (max-width: 900px) {
+
+        .class-info-section {
+            grid-template-columns: 1fr;
+        }
+
+        .classes-hero h1 {
+            font-size: 40px;
+        }
+
+        .class-panel-header {
+            flex-direction: column;
+
+            align-items: flex-start;
+
+            gap: 20px;
+        }
+
+        .panel-actions {
+            width: 100%;
+        }
+
+    }
+
+
+    @@media (max-width: 600px) {
+
+        .classes-hero-content {
+            padding: 55px 25px;
+        }
+
+        .classes-hero h1 {
+            font-size: 34px;
+        }
+
+        .classes-hero p {
+            font-size: 14px;
+        }
+
+        .class-info-section {
+            padding: 25px;
+        }
+
+        .class-management-panel {
+            margin: 0 25px;
+        }
+
+        .form-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .hero-actions {
+            flex-direction: column;
+        }
+
+        .panel-actions {
+            flex-direction: column;
+        }
+
+    }
+
+</style>
+
+
+<script>
+
+    const classDataCache = [];
+    const trainerDataCache = [];
+
+    function bindInfoCards() {
+        document.querySelectorAll(".class-info-card").forEach(card => {
+            const type = card.dataset.card;
+            if (!type) return;
+
+            card.addEventListener("click", () => openDetailPopup(type));
+            card.addEventListener("keydown", (event) => {
+                if (event.key === "Enter" || event.key === " ") {
+                    event.preventDefault();
+                    openDetailPopup(type);
+                }
+            });
+        });
+    }
+
+    async function loadDetailData() {
+        try {
+            const [classesResponse, trainersResponse] = await Promise.all([
+                fetch("/api/classes"),
+                fetch("/api/trainers")
+            ]);
+
+            if (classesResponse.ok) {
+                const classes = await classesResponse.json();
+                classDataCache.splice(0, classDataCache.length, ...classes);
+            }
+
+            if (trainersResponse.ok) {
+                const trainers = await trainersResponse.json();
+                trainerDataCache.splice(0, trainerDataCache.length, ...trainers);
+            }
+        }
+        catch (error) {
+            console.error(error);
+        }
+    }
+
+    function openDetailPopup(type) {
+        const popup = document.getElementById("classDetailPopup");
+        const title = document.getElementById("classDetailTitle");
+        const body = document.getElementById("classDetailBody");
+        const icon = document.getElementById("classDetailIcon");
+
+        if (!popup || !title || !body || !icon) return;
+
+        if (type === "schedule") {
+            title.textContent = "Class Scheduling Details";
+            icon.textContent = "ðŸ“…";
+
+            const items = classDataCache.length
+                ? classDataCache
+                : [{ name: "No class data available yet", scheduleDate: "", trainer: { fullName: "Please refresh the page" }, capacity: 0 }];
+
+            body.innerHTML = `
+                <ul class="detail-list">
+                    ${items.map(item => {
+                        const name = item.name || item.className || "Untitled Class";
+                        const sessionType = item.sessionType || item.description || "Morning";
+                        const trainer = item.trainer?.fullName || item.trainerName || "Trainer not assigned";
+                        const capacity = Number(item.capacity) || 0;
+                        const timeRange = (item.startTime || item.start) && (item.endTime || item.end)
+                            ? `${item.startTime || item.start} - ${item.endTime || item.end}`
+                            : (item.startTime || item.start || item.classTime || item.time || "Schedule not set");
+
+                        return `
+                            <li>
+                                <span class="detail-item-icon">ðŸ—“ï¸</span>
+                                <div class="detail-item-copy">
+                                    <strong>${escapeHtml(name)}</strong>
+                                    <span>ðŸ… Session: ${escapeHtml(sessionType)}</span>
+                                    <span>ðŸ’¡ Time: ${escapeHtml(timeRange)}</span>
+                                    <span>ðŸ‘¨â€ðŸ« Trainer: ${escapeHtml(trainer)}</span>
+                                    <span>ðŸ‘¥ Capacity: ${capacity} members</span>
+                                </div>
+                            </li>
+                        `;
+                    }).join("")}
+                </ul>
+            `;
+        }
+        else {
+            title.textContent = "Professional Trainer Details";
+            icon.textContent = "ðŸ‘¨â€ðŸ«";
+
+            const items = trainerDataCache.length
+                ? trainerDataCache
+                : [{ fullName: "No trainer data available yet", specialization: "General Fitness", email: "Not available", phone: "Not available" }];
+
+            body.innerHTML = `
+                <ul class="detail-list">
+                    ${items.map(item => `
+                        <li>
+                            <span class="detail-item-icon">ðŸ‘¤</span>
+                            <div class="detail-item-copy">
+                                <strong>${escapeHtml(item.fullName || "Trainer")}</strong>
+                                <span>ðŸ‹ï¸ Specialization: ${escapeHtml(item.specialization || "General Fitness")}</span>
+                                <span>ðŸ“§ Email: ${escapeHtml(item.email || "Not available")}</span>
+                                <span>ðŸ“ž Phone: ${escapeHtml(item.phone || "Not available")}</span>
+                            </div>
+                        </li>
+                    `).join("")}
+                </ul>
+            `;
+        }
+
+        popup.classList.add("active");
+        document.body.style.overflow = "hidden";
+    }
+
+    function closeDetailPopup() {
+        const popup = document.getElementById("classDetailPopup");
+        if (!popup) return;
+        popup.classList.remove("active");
+        document.body.style.overflow = "";
+    }
+
+    async function loadTrainerOptions(selectId = "trainer") {
+
+        const trainerSelect = document.getElementById(selectId);
+
+        if (!trainerSelect) {
+            return;
+        }
+
+        try {
+            const response = await fetch("/api/trainers");
+
+            if (!response.ok) {
+                throw new Error("Unable to load trainers.");
+            }
+
+            const trainers = await response.json();
+
+            trainerSelect.innerHTML = `
+                <option value="">Select Trainer...</option>
+                ${trainers.map(t => `
+                    <option value="${t.id}">${escapeHtml(t.fullName || "Trainer")}</option>
+                `).join("")}
+            `;
+
+            return trainers;
+        }
+        catch (error) {
+            console.error(error);
+            trainerSelect.innerHTML = `
+                <option value="">Unable to load trainers</option>
+            `;
+            return [];
+        }
+    }
+
+
+    async function loadClasses() {
+
+        const rows = document.getElementById("genericRows");
+
+        rows.innerHTML = `
+            <tr>
+                <td colspan="6" class="class-loading">
+                    Loading classes...
+                </td>
+            </tr>
+        `;
+
+        try {
+            const response = await fetch("/api/classes");
+
+            if (!response.ok) {
+                throw new Error("Unable to load classes.");
+            }
+
+            const classes = await response.json();
+            renderClasses(classes);
+            updateClassSummary(classes);
+        }
+        catch (error) {
+            console.error(error);
+            rows.innerHTML = `
+                <tr>
+                    <td colspan="6" class="class-loading">
+                        Unable to load classes.
+                    </td>
+                </tr>
+            `;
+        }
+    }
+
+
+    function updateClassSummary(classes) {
+
+        const list = Array.isArray(classes) ? classes : [];
+        const total = list.length;
+
+        const scheduleEl = document.getElementById("classScheduleSummary");
+        const trainerEl = document.getElementById("trainerSummary");
+
+        if (scheduleEl) {
+            scheduleEl.textContent = total
+                ? `${total} scheduled class${total > 1 ? "es" : ""} are available in the system.`
+                : "No class schedule information is available yet.";
+        }
+
+        if (trainerEl) {
+            const trainerCount = list.filter(item => item.trainer && item.trainer.fullName).length;
+            trainerEl.textContent = trainerCount
+                ? `${trainerCount} trainer assignment${trainerCount > 1 ? "s" : ""} are currently linked to class schedules.`
+                : "No trainer assignments are set for the registered classes yet.";
+        }
+    }
+
+
+    function renderClasses(classes) {
+
+        const rows = document.getElementById("genericRows");
+
+        if (!classes || classes.length === 0) {
+            rows.innerHTML = `
+                <tr>
+                    <td colspan="6" class="class-loading">
+                        No classes have been registered yet.
+                    </td>
+                </tr>
+            `;
+            return;
+        }
+
+        rows.innerHTML = classes.map(item => {
+            const trainerName = item.trainer?.fullName || item.trainerName || item.trainer || "Not assigned";
+            const className = item.name || item.className || "Untitled Class";
+            const capacity = Number(item.capacity) || 0;
+            const status = (item.status || "Pending").toString();
+            const badgeClass = (status || "pending").toLowerCase();
+
+            return `
+                <tr>
+                    <td><strong>#${item.id ?? ""}</strong></td>
+                    <td><strong>${escapeHtml(className)}</strong></td>
+                    <td>${escapeHtml(trainerName)}</td>
+                    <td>${formatSchedule(item)}</td>
+                    <td>${capacity} Members</td>
+                    <td>
+                        <span class="class-badge ${badgeClass}">${status}</span>
+                        <button type="button" class="mini-edit-btn" data-class-id="${item.id ?? ""}" onclick="openEditClassModal(${item.id ?? 0})">Edit</button>
+                    </td>
+                </tr>
+            `;
+        }).join("");
+    }
+
+
+    async function addClass(event) {
+
+        event.preventDefault();
+
+        const message = document.getElementById("classMessage");
+        const saveButton = document.querySelector(".save-class-btn");
+
+        const sessionType = document.getElementById("classType").value;
+        const startTime = document.getElementById("startTime").value;
+        const endTime = document.getElementById("endTime").value;
+        const status = document.getElementById("classStatus").value;
+
+        const trainerValue = document.getElementById("trainer").value;
+        const trainerId = trainerValue && trainerValue !== "" ? Number(trainerValue) : null;
+
+        const classData = {
+            name: document.getElementById("className").value.trim(),
+            trainerId,
+            description: sessionType,
+            sessionType,
+            startTime,
+            endTime,
+            status: trainerId ? status : "Pending",
+            scheduleDate: null,
+            durationMinutes: 60,
+            capacity: Number(document.getElementById("capacity").value)
+        };
+
+        saveButton.disabled = true;
+        saveButton.innerHTML = "Saving...";
+
+        try {
+            const response = await fetch("/api/classes", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(classData)
+            });
+
+            if (!response.ok) {
+                throw new Error("Class could not be saved.");
+            }
+
+            message.className = "class-message success";
+            message.textContent = "âœ“ Class added successfully.";
+
+            document.getElementById("addClassForm").reset();
+            await loadClasses();
+
+            setTimeout(() => {
+                closeAddClassModal();
+            }, 1000);
+        }
+        catch (error) {
+            console.error(error);
+            message.className = "class-message error";
+            message.textContent = "Unable to save class. Please try again.";
+        }
+        finally {
+            saveButton.disabled = false;
+            saveButton.innerHTML = "<span>ï¼‹</span> Save Class";
+        }
+    }
+
+    async function saveClassEdits(event) {
+        event.preventDefault();
+
+        const classId = document.getElementById("editClassId").value;
+        const message = document.getElementById("editClassMessage");
+        const saveButton = document.querySelector("#editClassForm .save-class-btn");
+
+        if (!classId) {
+            message.className = "class-message error";
+            message.textContent = "Class id is missing.";
+            return;
+        }
+
+        const sessionType = document.getElementById("editClassType").value;
+        const startTime = document.getElementById("editStartTime").value;
+        const endTime = document.getElementById("editEndTime").value;
+        const status = document.getElementById("editClassStatus").value;
+
+        const trainerValue = document.getElementById("editTrainer").value;
+        const trainerId = trainerValue && trainerValue !== "" ? Number(trainerValue) : null;
+
+        const classData = {
+            id: Number(classId),
+            name: document.getElementById("editClassName").value.trim(),
+            trainerId,
+            description: sessionType,
+            sessionType,
+            startTime,
+            endTime,
+            status: trainerId ? status : "Pending",
+            scheduleDate: null,
+            durationMinutes: 60,
+            capacity: Number(document.getElementById("editCapacity").value)
+        };
+
+        saveButton.disabled = true;
+        saveButton.innerHTML = "Updating...";
+
+        try {
+            const response = await fetch(`/api/classes/${classId}`, {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(classData)
+            });
+
+            if (!response.ok) {
+                throw new Error("Class could not be updated.");
+            }
+
+            message.className = "class-message success";
+            message.textContent = "âœ“ Class updated successfully.";
+
+            await loadClasses();
+
+            setTimeout(() => {
+                closeEditClassModal();
+            }, 1000);
+        }
+        catch (error) {
+            console.error(error);
+            message.className = "class-message error";
+            message.textContent = "Unable to update class. Please try again.";
+        }
+        finally {
+            saveButton.disabled = false;
+            saveButton.innerHTML = "<span>âœ“</span> Update Class";
+        }
+    }
+
+    async function openEditClassModal(classId) {
+        try {
+            const response = await fetch("/api/classes");
+            if (response.ok) {
+                const classes = await response.json();
+                classDataCache.splice(0, classDataCache.length, ...classes);
+            }
+        }
+        catch (error) {
+            console.error(error);
+        }
+
+        const item = classDataCache.find(x => Number(x.id) === Number(classId));
+        if (!item) {
+            return;
+        }
+
+        await loadTrainerOptions("editTrainer");
+
+        document.getElementById("editClassId").value = item.id ?? "";
+        document.getElementById("editClassName").value = item.name || item.className || "";
+        document.getElementById("editClassType").value = item.sessionType || item.description || "Morning";
+        document.getElementById("editStartTime").value = item.startTime || "08:00 AM";
+        document.getElementById("editEndTime").value = item.endTime || "10:00 AM";
+        document.getElementById("editCapacity").value = Number(item.capacity) || 0;
+
+        const trainerSelect = document.getElementById("editTrainer");
+        if (trainerSelect) {
+            const trainerValue = item.trainerId ?? (item.trainer ? item.trainer.id : "");
+            trainerSelect.value = trainerValue || "";
+        }
+
+        const statusField = document.getElementById("editClassStatus");
+        if (statusField) {
+            statusField.value = item.status || (trainerSelect && !trainerSelect.value ? "Pending" : "Pending");
+            if (!trainerSelect || !trainerSelect.value) {
+                statusField.value = "Pending";
+            }
+        }
+
+        document.getElementById("editClassModal").classList.add("active");
+        document.body.style.overflow = "hidden";
+    }
+
+    function closeEditClassModal() {
+        document.getElementById("editClassModal").classList.remove("active");
+        document.body.style.overflow = "";
+        const message = document.getElementById("editClassMessage");
+        if (message) {
+            message.className = "class-message";
+            message.textContent = "";
+        }
+    }
+
+    function applyPendingDefaultWhenNoTrainer(trainerSelectId, statusSelectId) {
+        const trainerSelect = document.getElementById(trainerSelectId);
+        const statusSelect = document.getElementById(statusSelectId);
+
+        if (!trainerSelect || !statusSelect) {
+            return;
+        }
+
+        const shouldBePending = !trainerSelect.value || trainerSelect.value === "";
+        if (shouldBePending) {
+            statusSelect.value = "Pending";
+        }
+    }
+
+    function openAddClassModal() {
+        loadTrainerOptions();
+        const statusField = document.getElementById("classStatus");
+        if (statusField) {
+            statusField.value = "Pending";
+        }
+        document.getElementById("addClassModal").classList.add("active");
+        document.body.style.overflow = "hidden";
+    }
+
+
+    function closeAddClassModal() {
+        document.getElementById("addClassModal").classList.remove("active");
+        document.body.style.overflow = "";
+        document.getElementById("classMessage").className = "class-message";
+    }
+
+
+    function formatSchedule(item) {
+        const sessionType = item.sessionType || item.description || "Morning";
+        const startTime = item.startTime || item.start || "";
+        const endTime = item.endTime || item.end || "";
+        const timeRange = startTime && endTime ? `${startTime} - ${endTime}` : (startTime || item.classTime || item.time || "");
+
+        if (timeRange) {
+            return `${sessionType} â€¢ ${timeRange}`;
+        }
+
+        return `${sessionType} â€¢ Schedule not set`;
+    }
+
+
+    function escapeHtml(value) {
+        return String(value)
+            .replaceAll("&", "&amp;")
+            .replaceAll("<", "&lt;")
+            .replaceAll(">", "&gt;")
+            .replaceAll('"', "&quot;")
+            .replaceAll("'", "&#039;");
+    }
+
+
+    document.addEventListener("DOMContentLoaded", async function () {
+        bindInfoCards();
+        loadTrainerOptions();
+
+        const trainerField = document.getElementById("trainer");
+        const addStatusField = document.getElementById("classStatus");
+        if (trainerField && addStatusField) {
+            trainerField.addEventListener("change", () => applyPendingDefaultWhenNoTrainer("trainer", "classStatus"));
+            applyPendingDefaultWhenNoTrainer("trainer", "classStatus");
+        }
+
+        const editTrainerField = document.getElementById("editTrainer");
+        const editStatusField = document.getElementById("editClassStatus");
+        if (editTrainerField && editStatusField) {
+            editTrainerField.addEventListener("change", () => applyPendingDefaultWhenNoTrainer("editTrainer", "editClassStatus"));
+        }
+
+        await Promise.all([loadDetailData(), loadClasses()]);
+
+        document.getElementById("classDetailClose")?.addEventListener("click", closeDetailPopup);
+        document.getElementById("classDetailPopup")?.addEventListener("click", (event) => {
+            if (event.target.id === "classDetailPopup") {
+                closeDetailPopup();
+            }
+        });
+    });
+
+</script>

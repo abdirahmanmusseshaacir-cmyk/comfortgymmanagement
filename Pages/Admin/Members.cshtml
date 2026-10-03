@@ -1,0 +1,1458 @@
+@page
+@{
+    ViewData["Title"] = "Members";
+}
+
+<!-- HERO SECTION -->
+<div class="members-hero">
+    <div class="members-hero-overlay"></div>
+    <div class="members-hero-content">
+        <span class="members-hero-label">COMFORT GYM MANAGEMENT SYSTEM</span>
+        <h1>Member Management</h1>
+        <p>
+            Diiwaangeli, maamul, oo la soco dhammaan xubnaha Comfort Gym, taariikhaha diiwaangelinta, iyo muddo-dhaca bille (monthly expiration) si casri ah.
+        </p>
+    </div>
+</div>
+
+<!-- STATS SUMMARY CARDS -->
+<div class="member-stats-grid">
+    <div class="mstat-card blue" onclick="filterMembers('all')">
+        <div class="mstat-icon">👥</div>
+        <div class="mstat-info">
+            <span class="mstat-label">Dhammaan Xubnaha</span>
+            <h3 id="statTotalMembers">0</h3>
+        </div>
+    </div>
+    <div class="mstat-card green" onclick="filterMembers('Active')">
+        <div class="mstat-icon">✅</div>
+        <div class="mstat-info">
+            <span class="mstat-label">Xubnaha Shaqaynaya (Active)</span>
+            <h3 id="statActiveMembers">0</h3>
+        </div>
+    </div>
+    <div class="mstat-card orange" onclick="filterMembers('Expiring Soon')">
+        <div class="mstat-icon">⏳</div>
+        <div class="mstat-info">
+            <span class="mstat-label">Dhawaan Dhacaya (&le; 7 Maalmood)</span>
+            <h3 id="statExpiringSoon">0</h3>
+        </div>
+    </div>
+    <div class="mstat-card red" onclick="filterMembers('Expired')">
+        <div class="mstat-icon">⚠️</div>
+        <div class="mstat-info">
+            <span class="mstat-label">Muddadii ka Dhacday (Expired)</span>
+            <h3 id="statExpiredMembers">0</h3>
+        </div>
+    </div>
+</div>
+
+<div class="member-status-strip">
+    <div class="member-status-note">
+        <span class="status-pill">Live overview</span>
+        <strong id="memberSummaryText">Loading member overview...</strong>
+    </div>
+    <div class="member-update-time" id="memberLastUpdated">Updated just now</div>
+</div>
+
+<!-- ADD NEW MEMBER PANEL -->
+<div class="panel member-add-panel">
+    <div class="member-panel-heading">
+        <span class="member-section-label">DIIWAANGELIN CUSUB (REGISTRATION)</span>
+        <h3>Diiwaangeli Xubin Cusub</h3>
+        <p>Geli xogta qofka, qorshaha xubinnimada, iyo taariikhda la diiwaangeliyey. Taariikhda dhicitaanku si toos ah ayay u noqonaysaa <strong>bille (1 month)</strong>.</p>
+    </div>
+
+    <form class="member-form" id="memberForm" onsubmit="addMember(event)">
+        <!-- FULL NAME -->
+        <div class="form-group">
+            <label>Magaca Buuxa (Full Name) *</label>
+            <input name="fullName" type="text" placeholder="Tusaale: Maxamed Cali Cilmi" required />
+        </div>
+
+        <!-- PHONE -->
+        <div class="form-group">
+            <label>Telefoonka (Phone Number) *</label>
+            <input name="phone" type="text" placeholder="+252 61..." required />
+        </div>
+
+        <!-- EMAIL -->
+        <div class="form-group">
+            <label>Email (Ikhtiyaari)</label>
+            <input name="email" type="email" placeholder="member@example.com" />
+        </div>
+
+        <!-- GENDER -->
+        <div class="form-group">
+            <label>Jinsiga (Gender) *</label>
+            <select name="gender" required>
+                <option value="Male">Lab (Male)</option>
+                <option value="Female">Dheddig (Female)</option>
+            </select>
+        </div>
+
+        <!-- PLAN -->
+        <div class="form-group">
+            <label>Qorshaha Xubinnimada (Membership Plan) *</label>
+            <select name="membershipPlanId" id="planSelect" onchange="handlePlanChange()">
+                <option value="1" data-days="30" data-price="30">Monthly Standard (Bille) - $30 (30 Days)</option>
+                <option value="2" data-days="30" data-price="50">Monthly VIP + Trainer - $50 (30 Days)</option>
+                <option value="3" data-days="90" data-price="80">Quarterly (3 Months) - $80 (90 Days)</option>
+                <option value="4" data-days="365" data-price="280">Annual (1 Year) - $280 (365 Days)</option>
+            </select>
+        </div>
+
+        <!-- ADDRESS -->
+        <div class="form-group">
+            <label>Cinwaanka / Degmada (Address)</label>
+            <input name="address" type="text" placeholder="Tusaale: KM4, Hodan" />
+        </div>
+
+        <!-- REGISTRATION DATE -->
+        <div class="form-group">
+            <label>Taariikhda Diiwaangelinta (Registration Date) *</label>
+            <input name="registrationDate" id="registrationDate" type="date" required onchange="calcExpiryDate()" />
+        </div>
+
+        <!-- EXPIRY DATE -->
+        <div class="form-group">
+            <label>Taariikhda Dhicitaanka (Expiry Date - Bille) *</label>
+            <input name="expiryDate" id="expiryDate" type="date" required />
+        </div>
+
+        <!-- EMERGENCY CONTACT -->
+        <div class="form-group">
+            <label>Qofka Degdegga ah (Emergency Contact)</label>
+            <input name="emergencyContact" type="text" placeholder="Magaca & Telefoonka qofka degdegga" />
+        </div>
+
+        <!-- NOTES -->
+        <div class="form-group">
+            <label>Faallo / Qoraal (Notes)</label>
+            <input name="notes" type="text" placeholder="Xaalad caafimaad ama qoraal kale..." />
+        </div>
+
+        <div class="member-date-note">
+            💡 <strong>Ogeysiis:</strong> Xubinta marka la diiwaangeliyo, taariikhda la diiwaangeliyey iyo taariikhda dhicitaanka oo <strong>bille ah (+30 maalmood)</strong> ayaa si toos ah loo xisaabinayaa. Lacag-bixinta horena si toos ah ayaa loogu qorayaa nidaamka.
+        </div>
+
+        <button type="submit" class="member-add-button" id="addMemberButton">
+            + Diiwaangeli Xubinta (Register Member)
+        </button>
+    </form>
+
+    <div id="memberMessage" class="member-message"></div>
+</div>
+
+<!-- MEMBERS DIRECTORY & FILTER -->
+<div class="panel member-directory-panel">
+    <div class="directory-toolbar">
+        <div>
+            <span class="member-section-label">LIISKA XUBNAHA (MEMBERS LIST)</span>
+            <h3>Xubnaha Gym-ka & Xaaladdooda</h3>
+        </div>
+        <div class="toolbar-actions">
+            <input type="text" id="memberSearch" placeholder="🔍 Raadi magac, tel, email..." oninput="handleSearch(this.value)" class="search-input" />
+            <button type="button" class="member-refresh-button" onclick="loadMembers()">↻ Cusboonaysii</button>
+        </div>
+    </div>
+
+    <!-- FILTER TABS -->
+    <div class="filter-tabs">
+        <button class="ftab active" data-filter="all" onclick="filterMembers('all')">Dhammaan (<span id="countAll">0</span>)</button>
+        <button class="ftab" data-filter="Active" onclick="filterMembers('Active')">🟢 Active (<span id="countActive">0</span>)</button>
+        <button class="ftab" data-filter="Expiring Soon" onclick="filterMembers('Expiring Soon')">🟡 Dhawaan Dhacaya (<span id="countSoon">0</span>)</button>
+        <button class="ftab" data-filter="Expired" onclick="filterMembers('Expired')">🔴 Expired (<span id="countExpired">0</span>)</button>
+    </div>
+
+    <div class="members-table-container">
+        <table class="members-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Magaca Xubinta</th>
+                    <th>Telefoonka</th>
+                    <th>Qorshaha</th>
+                    <th>Diiwaangelinta</th>
+                    <th>Dhicitaanka</th>
+                    <th>Maalmaha</th>
+                    <th>Xaaladda</th>
+                    <th>Ficillada</th>
+                </tr>
+            </thead>
+            <tbody id="membersRows">
+                <tr>
+                    <td colspan="9" class="members-loading">Xogta xubnaha ayaa la soo gelinayaa...</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- =========================================================
+     RENEWAL MODAL (CUSBOONAYSIIN BILLE / MULTI-MONTH)
+     ========================================================= -->
+<!-- =========================================================
+     EDIT MEMBER MODAL
+     ========================================================= -->
+<div id="editMemberModal" class="member-modal">
+    <div class="member-modal-box" style="max-width:620px;">
+        <div class="member-modal-header">
+            <div>
+                <span class="member-section-label">TIXRAAC / BEDIT (EDIT)</span>
+                <h3>Wax ka bedel Xubinta</h3>
+            </div>
+            <button type="button" class="member-modal-close" onclick="closeEditMemberModal()">×</button>
+        </div>
+        <div class="member-modal-content">
+            <form id="editMemberForm" onsubmit="submitMemberEdit(event)">
+                <input type="hidden" id="editMemberId" />
+                <input type="hidden" id="editRequestedByUserId" />
+                <div class="renew-member-badge" style="margin-bottom:18px;">
+                    <div class="rmb-avatar">👤</div>
+                    <div>
+                        <h4 id="editMemberName">-</h4>
+                        <p>Waxaa diiwaangeliyay: <strong id="editRegisteredBy">-</strong></p>
+                    </div>
+                </div>
+
+                <div class="member-form" style="grid-template-columns: repeat(2, minmax(0, 1fr));">
+                    <div class="form-group">
+                        <label>Magaca Buuxa</label>
+                        <input id="editFullName" type="text" required />
+                    </div>
+                    <div class="form-group">
+                        <label>Telefoonka</label>
+                        <input id="editPhone" type="text" required />
+                    </div>
+                    <div class="form-group">
+                        <label>Email</label>
+                        <input id="editEmail" type="email" />
+                    </div>
+                    <div class="form-group">
+                        <label>Jinsiga</label>
+                        <select id="editGender">
+                            <option value="Male">Lab (Male)</option>
+                            <option value="Female">Dheddig (Female)</option>
+                        </select>
+                    </div>
+                    <div class="form-group" style="grid-column: 1 / -1;">
+                        <label>Cinwaanka</label>
+                        <input id="editAddress" type="text" />
+                    </div>
+                    <div class="form-group">
+                        <label>Taariikhda Diiwaangelinta</label>
+                        <input id="editRegistrationDate" type="date" />
+                    </div>
+                    <div class="form-group">
+                        <label>Taariikhda Dhicitaanka</label>
+                        <input id="editExpiryDate" type="date" />
+                    </div>
+                    <div class="form-group" style="grid-column: 1 / -1;">
+                        <label>Qofka Degdegga ah</label>
+                        <input id="editEmergencyContact" type="text" />
+                    </div>
+                    <div class="form-group" style="grid-column: 1 / -1;">
+                        <label>Faallo / Qoraal</label>
+                        <input id="editNotes" type="text" />
+                    </div>
+                </div>
+
+                <button type="submit" class="member-add-button" style="margin-top:18px;">
+                    💾 Save Changes
+                </button>
+            </form>
+            <div id="editMemberMessage" class="member-message"></div>
+        </div>
+    </div>
+</div>
+
+<div id="renewModal" class="member-modal">
+    <div class="member-modal-box">
+        <div class="member-modal-header">
+            <div>
+                <span class="member-section-label">CUSBOONAYSIIN (RENEWAL)</span>
+                <h3>Cusboonaysii Xubinnimada</h3>
+            </div>
+            <button type="button" class="member-modal-close" onclick="closeRenewModal()">×</button>
+        </div>
+        <div class="member-modal-content">
+            <form id="renewForm" onsubmit="submitRenewal(event)">
+                <input type="hidden" id="renewMemberId" />
+                <div class="renew-member-badge">
+                    <div class="rmb-avatar">👤</div>
+                    <div>
+                        <h4 id="renewMemberName">-</h4>
+                        <p>Taariikhda hadda uu ka dhacayo: <strong id="renewCurrentExpiry" class="text-orange">-</strong></p>
+                    </div>
+                </div>
+
+                <div class="form-group" style="margin-top:15px;">
+                    <label>Muddada Cusboonaysiinta (Renewal Duration) *</label>
+                    <select id="renewDuration" onchange="updateRenewPreview()">
+                        <option value="30" data-amount="30">1 Bil (Bille - 30 Maalmood) - $30</option>
+                        <option value="60" data-amount="60">2 Bilood (60 Maalmood) - $60</option>
+                        <option value="90" data-amount="80">3 Bilood (Quarterly - 90 Maalmood) - $80</option>
+                        <option value="180" data-amount="150">6 Bilood (Half Year) - $150</option>
+                        <option value="365" data-amount="280">1 Sano (Annual - 365 Maalmood) - $280</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Taariikhda Cusub ee Dhicitaanka (New Expiry Date Preview)</label>
+                    <div id="renewNewExpiryPreview" class="new-expiry-box">--</div>
+                </div>
+
+                <div class="form-group">
+                    <label>Lacagta La Bixinayo ($ Amount)</label>
+                    <input type="number" step="0.01" id="renewAmount" value="30.00" required />
+                </div>
+
+                <div class="form-group">
+                    <label>Habka Lacag Bixinta (Payment Method)</label>
+                    <select id="renewPaymentMethod">
+                        <option value="EVC Plus">EVC Plus</option>
+                        <option value="Zaad">Zaad Service</option>
+                        <option value="Sahal">Sahal Service</option>
+                        <option value="Cash" selected>Kaash (Cash)</option>
+                        <option value="Card">Bank Card</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Qoraal (Notes)</label>
+                    <input type="text" id="renewNotes" value="Monthly Membership Renewal" />
+                </div>
+
+                <button type="submit" class="member-add-button" id="renewSubmitBtn" style="background:#2563eb; margin-top:15px;">
+                    🔄 Xaqiiji Cusboonaysiinta (Confirm Renewal)
+                </button>
+            </form>
+            <div id="renewMsg" class="member-message"></div>
+        </div>
+    </div>
+</div>
+
+<!-- =========================================================
+     MEMBER ID CARD MODAL (DAABAC KAARKA)
+     ========================================================= -->
+<div id="cardModal" class="member-modal">
+    <div class="member-modal-box" style="max-width:480px;">
+        <div class="member-modal-header">
+            <div>
+                <span class="member-section-label">KAARKA XUBINTA (MEMBER ID CARD)</span>
+                <h3>Kaarka Aqoonsiga Xubinta</h3>
+            </div>
+            <button type="button" class="member-modal-close" onclick="closeCardModal()">×</button>
+        </div>
+        <div class="member-modal-content" style="text-align:center;">
+            <!-- CARD BODY -->
+            <div class="gym-id-card" id="printableCard">
+                <div class="card-header">
+                    <div class="card-logo">🏋️ COMFORT GYM</div>
+                    <div class="card-type">OFFICIAL MEMBER PASS</div>
+                </div>
+                <div class="card-body">
+                    <div class="card-avatar" id="cardAvatar">👤</div>
+                    <div class="card-details">
+                        <h3 id="cardName">Maxamed Cali</h3>
+                        <div class="card-id-tag">ID: <span id="cardId">CG-001</span></div>
+                        <div class="card-row"><span>Telefoonka:</span> <strong id="cardPhone">-</strong></div>
+                        <div class="card-row"><span>Diiwaangelinta:</span> <strong id="cardRegDate">-</strong></div>
+                        <div class="card-row"><span>Muddada Dhaca:</span> <strong id="cardExpDate" class="text-orange">-</strong></div>
+                        <div class="card-row"><span>Xaaladda:</span> <strong id="cardStatus">-</strong></div>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <div class="barcode">||| | | |||| || | |||| || ||| | |||</div>
+                    <small>Comfort Gym • KM4, Mogadishu • Tel: +252 61 5000000</small>
+                </div>
+            </div>
+
+            <div style="margin-top:20px; display:flex; gap:10px; justify-content:center;">
+                <button type="button" class="member-refresh-button" onclick="window.print()" style="background:#2563eb; min-height:44px; font-size:14px;">
+                    🖨️ Daabac Kaarka (Print Card)
+                </button>
+                <button type="button" class="member-refresh-button" onclick="closeCardModal()" style="background:#64748b; min-height:44px;">
+                    Xir (Close)
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- =========================================================
+     CSS STYLING
+     ========================================================= -->
+<style>
+.members-hero {
+    min-height: 200px;
+    position: relative;
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+    border-radius: 16px;
+    margin-bottom: 25px;
+    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+    box-shadow: 0 10px 25px rgba(15, 23, 42, 0.15);
+}
+.members-hero-overlay {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at top right, rgba(37, 99, 235, 0.25), transparent 70%);
+}
+.members-hero-content {
+    position: relative;
+    z-index: 2;
+    padding: 35px 40px;
+    color: white;
+}
+.members-hero-label {
+    display: inline-block;
+    margin-bottom: 8px;
+    color: #60a5fa;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 2px;
+}
+.members-hero h1 {
+    margin: 0 0 10px;
+    font-size: 32px;
+    font-weight: 800;
+}
+.members-hero p {
+    margin: 0;
+    color: #cbd5e1;
+    font-size: 15px;
+    max-width: 700px;
+    line-height: 1.6;
+}
+
+/* STATS GRID */
+.member-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-bottom: 18px;
+}
+.member-status-strip {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    margin-bottom: 24px;
+    border: 1px solid #dfe7f3;
+    border-radius: 12px;
+    background: linear-gradient(135deg, #f8fbff 0%, #eef4ff 100%);
+    box-shadow: 0 6px 18px rgba(37, 99, 235, 0.04);
+}
+.member-status-note {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    color: #1e293b;
+}
+.member-status-note strong {
+    font-size: 14px;
+}
+.status-pill {
+    display: inline-flex;
+    align-items: center;
+    padding: 6px 10px;
+    border-radius: 999px;
+    background: #dbeafe;
+    color: #1d4ed8;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+}
+.member-update-time {
+    font-size: 12px;
+    color: #475569;
+    font-weight: 700;
+}
+.mstat-card {
+    background: white;
+    padding: 18px 20px;
+    border-radius: 14px;
+    border: 1px solid #e2e8f0;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    cursor: pointer;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+    transition: all 0.2s ease;
+}
+.mstat-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.07);
+}
+.mstat-icon {
+    font-size: 28px;
+    width: 50px;
+    height: 50px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.mstat-card.blue .mstat-icon { background: #eff6ff; }
+.mstat-card.green .mstat-icon { background: #ecfdf5; }
+.mstat-card.orange .mstat-icon { background: #fff7ed; }
+.mstat-card.red .mstat-icon { background: #fef2f2; }
+
+.mstat-info .mstat-label {
+    font-size: 12px;
+    font-weight: 700;
+    color: #64748b;
+    display: block;
+    margin-bottom: 4px;
+}
+.mstat-info h3 {
+    margin: 0;
+    font-size: 24px;
+    font-weight: 800;
+    color: #0f172a;
+}
+
+/* FORM */
+.member-add-panel {
+    margin-bottom: 25px;
+}
+.member-panel-heading {
+    margin-bottom: 20px;
+}
+.member-section-label {
+    display: block;
+    margin-bottom: 5px;
+    color: #2563eb;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 1.5px;
+}
+.member-panel-heading h3 {
+    margin: 0 0 5px;
+    font-size: 22px;
+    color: #0f172a;
+}
+.member-panel-heading p {
+    margin: 0;
+    color: #64748b;
+    font-size: 14px;
+}
+.member-form {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+}
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+.form-group label {
+    font-size: 13px;
+    font-weight: 700;
+    color: #334155;
+}
+.form-group input, .form-group select {
+    padding: 10px 14px;
+    border: 1px solid #cbd5e1;
+    border-radius: 9px;
+    outline: none;
+    font-size: 14px;
+    background: white;
+    color: #0f172a;
+}
+.form-group input:focus, .form-group select:focus {
+    border-color: #2563eb;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+}
+.member-date-note {
+    grid-column: 1 / -1;
+    padding: 12px 16px;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 9px;
+    font-size: 13px;
+    color: #475569;
+}
+.member-add-button {
+    grid-column: 1 / -1;
+    min-height: 48px;
+    background: #16a34a;
+    color: white;
+    font-size: 15px;
+    font-weight: 800;
+    border: none;
+    border-radius: 9px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+.member-add-button:hover {
+    background: #15803d;
+}
+
+/* DIRECTORY & TOOLBAR */
+.directory-toolbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin-bottom: 18px;
+}
+.toolbar-actions {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+.search-input {
+    min-width: 250px;
+    padding: 9px 14px;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    font-size: 13px;
+}
+.filter-tabs {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 18px;
+    border-bottom: 1px solid #e2e8f0;
+    padding-bottom: 12px;
+}
+.ftab {
+    padding: 8px 16px;
+    border-radius: 20px;
+    border: 1px solid #e2e8f0;
+    background: white;
+    color: #475569;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+.ftab.active, .ftab:hover {
+    background: #0f172a;
+    color: white;
+    border-color: #0f172a;
+}
+
+/* TABLE */
+.members-table-container {
+    width: 100%;
+    overflow-x: auto;
+}
+.members-table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 950px;
+}
+.members-table th {
+    background: #f8fafc;
+    padding: 14px 12px;
+    text-align: left;
+    font-size: 12px;
+    font-weight: 800;
+    color: #334155;
+    border-bottom: 1px solid #e2e8f0;
+}
+.members-table td {
+    padding: 13px 12px;
+    border-bottom: 1px solid #f1f5f9;
+    font-size: 13px;
+    color: #334155;
+}
+.members-table tr:hover {
+    background: #f8fafc;
+}
+
+/* BADGES */
+.status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 5px 10px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 800;
+}
+.status-badge.active { background: #dcfce7; color: #15803d; }
+.status-badge.soon { background: #fef3c7; color: #b45309; }
+.status-badge.expired { background: #fee2e2; color: #b91c1c; }
+
+.date-pill {
+    display: inline-block;
+    padding: 4px 8px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 700;
+    background: #f1f5f9;
+}
+.date-pill.blue { background: #eff6ff; color: #2563eb; }
+.date-pill.orange { background: #fff7ed; color: #c2410c; }
+.days-pill {
+    display: inline-block;
+    padding: 3px 8px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 800;
+}
+.days-pill.good { background: #e0e7ff; color: #3730a3; }
+.days-pill.warning { background: #ffedd5; color: #c2410c; }
+.days-pill.danger { background: #fef2f2; color: #dc2626; }
+
+/* ACTION BUTTONS */
+.action-btns {
+    display: flex;
+    gap: 6px;
+}
+.btn-action {
+    padding: 6px 11px;
+    border-radius: 6px;
+    font-size: 11px;
+    font-weight: 800;
+    border: none;
+    cursor: pointer;
+    transition: opacity 0.2s;
+}
+.btn-action.renew { background: #2563eb; color: white; }
+.btn-action.card { background: #475569; color: white; }
+.btn-action.delete { background: #fee2e2; color: #dc2626; }
+.btn-action:hover { opacity: 0.85; }
+
+/* MODALS */
+.member-modal {
+    position: fixed;
+    inset: 0;
+    background: rgba(15, 23, 42, 0.6);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    padding: 20px;
+}
+.member-modal.active { display: flex; }
+.member-modal-box {
+    background: white;
+    width: 100%;
+    max-width: 540px;
+    border-radius: 16px;
+    padding: 24px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+    max-height: 90vh;
+    overflow-y: auto;
+}
+.member-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #e2e8f0;
+    padding-bottom: 14px;
+    margin-bottom: 18px;
+}
+.member-modal-close {
+    background: none;
+    border: none;
+    font-size: 24px;
+    color: #94a3b8;
+    cursor: pointer;
+}
+.renew-member-badge {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    background: #f8fafc;
+    padding: 12px 16px;
+    border-radius: 10px;
+    border: 1px solid #e2e8f0;
+}
+.rmb-avatar {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: #2563eb;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+}
+.new-expiry-box {
+    background: #ecfdf5;
+    color: #047857;
+    border: 1px dashed #10b981;
+    padding: 10px 14px;
+    border-radius: 8px;
+    font-size: 15px;
+    font-weight: 800;
+}
+
+/* GYM ID CARD STYLING */
+.gym-id-card {
+    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+    color: white;
+    border-radius: 16px;
+    padding: 22px;
+    box-shadow: 0 15px 30px rgba(0,0,0,0.25);
+    text-align: left;
+    position: relative;
+    border: 2px solid rgba(255,255,255,0.1);
+}
+.gym-id-card .card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid rgba(255,255,255,0.15);
+    padding-bottom: 12px;
+    margin-bottom: 16px;
+}
+.gym-id-card .card-logo {
+    font-size: 16px;
+    font-weight: 900;
+    color: #60a5fa;
+    letter-spacing: 1px;
+}
+.gym-id-card .card-type {
+    font-size: 10px;
+    font-weight: 800;
+    background: rgba(255,255,255,0.15);
+    padding: 3px 8px;
+    border-radius: 10px;
+}
+.gym-id-card .card-body {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+    margin-bottom: 16px;
+}
+.gym-id-card .card-avatar {
+    width: 65px;
+    height: 65px;
+    border-radius: 50%;
+    background: #2563eb;
+    border: 3px solid #60a5fa;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 30px;
+    flex-shrink: 0;
+}
+.gym-id-card .card-details h3 {
+    margin: 0 0 4px;
+    font-size: 18px;
+    color: white;
+}
+.gym-id-card .card-id-tag {
+    font-size: 11px;
+    color: #93c5fd;
+    font-weight: 800;
+    margin-bottom: 6px;
+}
+.gym-id-card .card-row {
+    font-size: 12px;
+    color: #cbd5e1;
+    margin-bottom: 3px;
+}
+.gym-id-card .card-row strong {
+    color: white;
+}
+.gym-id-card .card-footer {
+    border-top: 1px solid rgba(255,255,255,0.12);
+    padding-top: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.gym-id-card .barcode {
+    font-family: monospace;
+    letter-spacing: 2px;
+    color: #94a3b8;
+    font-size: 11px;
+}
+.gym-id-card small {
+    color: #64748b;
+    font-size: 10px;
+}
+
+@@media (max-width: 768px) {
+    .member-stats-grid { grid-template-columns: repeat(2, 1fr); }
+    .member-form { grid-template-columns: 1fr; }
+}
+</style>
+
+<!-- =========================================================
+     JAVASCRIPT LOGIC
+     ========================================================= -->
+<script>
+let allMembers = [];
+let currentFilter = 'all';
+let currentSearch = '';
+let activeMemberForRenew = null;
+
+function initializeMemberPage() {
+    initDefaultDates();
+    loadMembers();
+}
+
+async function refreshMembersFromApi() {
+    try {
+        const response = await fetch('/api/members');
+        if (!response.ok) throw new Error('Failed to load members');
+
+        const members = await response.json();
+        const list = Array.isArray(members) ? members : [];
+
+        allMembers = list;
+        window.allMembers = list;
+        updateStats();
+        renderMembersTable();
+    } catch (err) {
+        console.error(err);
+        const tbody = document.getElementById('membersRows');
+        if (tbody) {
+            tbody.innerHTML = '<tr><td colspan="9" style="text-align:center; padding:30px; color:#dc2626;">Cilad ayaa dhacday soo gelinta xubnaha.</td></tr>';
+        }
+    }
+}
+
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => {
+        setupAmountPaidTracking();
+        initDefaultDates();
+        refreshMembersFromApi();
+        setTimeout(refreshMembersFromApi, 400);
+    });
+} else {
+    setupAmountPaidTracking();
+    initDefaultDates();
+    refreshMembersFromApi();
+    setTimeout(refreshMembersFromApi, 400);
+}
+
+window.addEventListener('load', () => {
+    setupAmountPaidTracking();
+    refreshMembersFromApi();
+});
+
+function initDefaultDates() {
+    const today = new Date();
+    const todayStr = formatDateIso(today);
+    const regInput = document.getElementById('registrationDate');
+    if (regInput) {
+        regInput.value = todayStr;
+        calcExpiryDate();
+    }
+}
+
+function calcExpiryDate() {
+    const regInput = document.getElementById('registrationDate');
+    const expInput = document.getElementById('expiryDate');
+    const planSelect = document.getElementById('planSelect');
+    if (!regInput || !expInput) return;
+
+    const regDate = new Date(regInput.value || new Date());
+    const selectedOption = planSelect?.selectedOptions[0];
+    const durationDays = parseInt(selectedOption?.getAttribute('data-days') || '30', 10);
+
+    const expDate = new Date(regDate);
+    expDate.setDate(expDate.getDate() + durationDays);
+
+    expInput.value = formatDateIso(expDate);
+    expInput.min = regInput.value;
+}
+
+function handlePlanChange() {
+    const planSelect = document.getElementById('planSelect');
+    const amountInput = document.getElementById('amountPaid');
+    if (planSelect && amountInput) {
+        const price = planSelect.selectedOptions[0]?.getAttribute('data-price') || '30';
+        const defaultValue = parseFloat(price).toFixed(2);
+
+        if (amountInput.dataset.userEdited !== 'true') {
+            amountInput.value = defaultValue;
+        }
+    }
+    calcExpiryDate();
+}
+
+function setupAmountPaidTracking() {
+    const amountInput = document.getElementById('amountPaid');
+    if (!amountInput) return;
+
+    amountInput.dataset.userEdited = 'false';
+    amountInput.addEventListener('input', () => {
+        amountInput.dataset.userEdited = 'true';
+    });
+    amountInput.addEventListener('focus', () => {
+        if (amountInput.dataset.userEdited !== 'true') {
+            amountInput.dataset.userEdited = 'true';
+        }
+    });
+}
+
+function formatDateIso(date) {
+    const y = date.getFullYear();
+    const m = String(date.getMonth() + 1).padStart(2, '0');
+    const d = String(date.getDate()).padStart(2, '0');
+    return `${y}-${m}-${d}`;
+}
+
+async function loadMembers() {
+    const tbody = document.getElementById('membersRows');
+    if (tbody) tbody.innerHTML = `<tr><td colspan="9" class="members-loading">Xogta xubnaha ayaa la soo gelinayaa...</td></tr>`;
+
+    try {
+        const res = await fetch('/api/members');
+        if (!res.ok) throw new Error('Cilad ayaa dhacday xogta xubnaha.');
+
+        const membersData = await res.json();
+        allMembers = Array.isArray(membersData) ? membersData : [];
+        window.allMembers = allMembers;
+
+        if (!Array.isArray(allMembers)) {
+            allMembers = [];
+            window.allMembers = allMembers;
+        }
+
+        updateStats();
+        renderMembersTable();
+    } catch (err) {
+        console.error(err);
+        if (tbody) tbody.innerHTML = `<tr><td colspan="9" style="text-align:center; padding:30px; color:#dc2626;">Cilad ayaa dhacday soo gelinta xubnaha.</td></tr>`;
+    }
+}
+
+function updateStats() {
+    const membersList = Array.isArray(allMembers) ? allMembers : [];
+    const total = membersList.length;
+    const active = membersList.filter(m => m.status === 'Active').length;
+    const soon = membersList.filter(m => m.status === 'Expiring Soon').length;
+    const expired = membersList.filter(m => m.status === 'Expired').length;
+    const activeIncludingSoon = active + soon;
+
+    document.getElementById('statTotalMembers').textContent = total;
+    document.getElementById('statActiveMembers').textContent = activeIncludingSoon;
+    document.getElementById('statExpiringSoon').textContent = soon;
+    document.getElementById('statExpiredMembers').textContent = expired;
+
+    document.getElementById('countAll').textContent = total;
+    document.getElementById('countActive').textContent = activeIncludingSoon;
+    document.getElementById('countSoon').textContent = soon;
+    document.getElementById('countExpired').textContent = expired;
+
+    const summaryText = document.getElementById('memberSummaryText');
+    const lastUpdated = document.getElementById('memberLastUpdated');
+    if (summaryText) {
+        summaryText.textContent = `${total} total members • ${active} active • ${soon} expiring soon • ${expired} expired`;
+    }
+    if (lastUpdated) {
+        lastUpdated.textContent = `Updated: ${new Date().toLocaleString()}`;
+    }
+}
+
+function filterMembers(status) {
+    currentFilter = status;
+    document.querySelectorAll('.ftab').forEach(t => {
+        t.classList.toggle('active', t.getAttribute('data-filter') === status);
+    });
+    renderMembersTable();
+}
+
+function matchesStatusFilter(member, status) {
+    if (status === 'Active') {
+        return member.status === 'Active' || member.status === 'Expiring Soon';
+    }
+
+    if (status === 'Expired') {
+        return member.status === 'Expired';
+    }
+
+    if (status === 'Expiring Soon') {
+        return member.status === 'Expiring Soon';
+    }
+
+    return true;
+}
+
+function handleSearch(query) {
+    currentSearch = (query || '').toLowerCase().trim();
+    renderMembersTable();
+}
+
+function renderMembersTable() {
+    const tbody = document.getElementById('membersRows');
+    if (!tbody) return;
+
+    let filtered = allMembers;
+
+    if (currentFilter !== 'all') {
+        filtered = filtered.filter(m => matchesStatusFilter(m, currentFilter));
+    }
+
+    if (currentSearch) {
+        filtered = filtered.filter(m =>
+            (m.fullName || '').toLowerCase().includes(currentSearch) ||
+            (m.phone || '').toLowerCase().includes(currentSearch) ||
+            (m.email || '').toLowerCase().includes(currentSearch) ||
+            String(m.id).includes(currentSearch)
+        );
+    }
+
+    if (filtered.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="9" style="text-align:center; padding:35px; color:#64748b;">Wax xubin ah laguma helin xaaladdan ama baaritaankan.</td></tr>`;
+        return;
+    }
+
+    const currentUser = getCurrentGymUser();
+
+    tbody.innerHTML = filtered.map(m => {
+        let statusBadge = '';
+        let daysBadge = '';
+        const canManage = currentUser && (m.createdByUserId == null || Number(m.createdByUserId) === Number(currentUser.id));
+
+        if (m.status === 'Active') {
+            statusBadge = `<span class="status-badge active">● Shaqaynaya</span>`;
+            daysBadge = `<span class="days-pill good">${m.daysLeft} Maalmood</span>`;
+        } else if (m.status === 'Expiring Soon') {
+            statusBadge = `<span class="status-badge soon">⏳ Dhawaan Dhacaya</span>`;
+            daysBadge = `<span class="days-pill warning">${m.daysLeft} Maalmood</span>`;
+        } else {
+            statusBadge = `<span class="status-badge expired">⚠️ Wuu Dhacay</span>`;
+            daysBadge = `<span class="days-pill danger">Dhacay (${Math.abs(m.daysLeft)}d)</span>`;
+        }
+
+        const editButton = canManage
+            ? `<button type="button" class="btn-action renew" onclick="openEditMemberModal(${m.id})" title="Wax ka bedel">✏️ Edit</button>`
+            : `<button type="button" class="btn-action renew" style="opacity:0.4; cursor:not-allowed;" title="Kaliya qofka diiwaangeliyey ayaa wax ka bedeli kara">✏️ Edit</button>`;
+
+        const deleteButton = canManage
+            ? `<button type="button" class="btn-action delete" onclick="deleteMember(${m.id})" title="Tirtir">🗑️</button>`
+            : `<button type="button" class="btn-action delete" style="opacity:0.4; cursor:not-allowed;" title="Kaliya qofka diiwaangeliyey ayaa tirtiri kara">🗑️</button>`;
+
+        return `
+            <tr>
+                <td><strong>#${m.id}</strong></td>
+                <td>
+                    <div style="font-weight:800; color:#0f172a;">${escapeHtml(m.fullName)}</div>
+                    <small style="color:#64748b;">${escapeHtml(m.gender || 'Member')} • ${escapeHtml(m.address || '-')}</small>
+                </td>
+                <td>${escapeHtml(m.phone || '-')}</td>
+                <td><span style="font-weight:700; color:#475569;">${escapeHtml(m.planName || 'Monthly Standard')}</span></td>
+                <td><span class="date-pill blue">${m.registrationDate || '-'}</span></td>
+                <td><span class="date-pill orange">${m.expiryDate || '-'}</span></td>
+                <td>${daysBadge}</td>
+                <td>${statusBadge}</td>
+                <td>
+                    <div class="action-btns">
+                        <button type="button" class="btn-action renew" onclick="openRenewModal(${m.id})" title="Cusboonaysii Xubinnimada">🔄 Renew</button>
+                        <button type="button" class="btn-action card" onclick="openCardModal(${m.id})" title="Arag Kaarka Xubinta">🪪 Kaar</button>
+                        ${editButton}
+                        ${deleteButton}
+                    </div>
+                </td>
+            </tr>
+        `;
+    }).join('');
+}
+
+async function addMember(e) {
+    e.preventDefault();
+    const form = e.target;
+    const btn = document.getElementById('addMemberButton');
+    const msg = document.getElementById('memberMessage');
+
+    const regDate = form.registrationDate.value;
+    const expDate = form.expiryDate.value;
+
+    if (expDate < regDate) {
+        msg.textContent = 'Taariikhda dhicitaanku kama hor mari karto taariikhda la diiwaangeliyey!';
+        msg.style.color = '#dc2626';
+        return;
+    }
+
+    const currentUser = getCurrentGymUser();
+    const payload = {
+        fullName: form.fullName.value.trim(),
+        phone: form.phone.value.trim(),
+        email: form.email.value.trim() || null,
+        gender: form.gender.value,
+        address: form.address.value.trim(),
+        registrationDate: regDate,
+        expiryDate: expDate,
+        membershipPlanId: parseInt(form.membershipPlanId.value, 10),
+        emergencyContact: form.emergencyContact.value.trim(),
+        notes: form.notes.value.trim(),
+        createdByUserId: currentUser ? Number(currentUser.id) : null,
+        createdByName: currentUser ? currentUser.fullName : 'System'
+    };
+
+    btn.disabled = true;
+    btn.textContent = 'Diiwaangelinta ayaa socota...';
+    msg.textContent = '';
+
+    try {
+        const res = await fetch('/api/members', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        });
+
+        if (!res.ok) {
+            const errData = await res.json().catch(() => ({}));
+            throw new Error(errData.message || 'Diiwaangelintu ma suuroobin.');
+        }
+
+        form.reset();
+        const amountInput = document.getElementById('amountPaid');
+        if (amountInput) {
+            amountInput.dataset.userEdited = 'false';
+        }
+        initDefaultDates();
+        handlePlanChange();
+
+        msg.textContent = '✅ Xubinta si guul leh ayaa loo diiwaangeliyey oo loogu daray nidaamka!';
+        msg.style.color = '#16a34a';
+
+        await loadMembers();
+    } catch (err) {
+        console.error(err);
+        msg.textContent = '❌ ' + err.message;
+        msg.style.color = '#dc2626';
+    } finally {
+        btn.disabled = false;
+        btn.textContent = '+ Diiwaangeli Xubinta (Register Member)';
+    }
+}
+
+function getCurrentGymUser() {
+    try {
+        const raw = localStorage.getItem('gymUser');
+        return raw ? JSON.parse(raw) : null;
+    } catch {
+        return null;
+    }
+}
+
+function canManageMember(member) {
+    const currentUser = getCurrentGymUser();
+    if (!currentUser) return false;
+    return member.createdByUserId == null || Number(member.createdByUserId) === Number(currentUser.id);
+}
+
+async function deleteMember(id) {
+    const member = allMembers.find(x => x.id === id);
+    if (!member) return;
+
+    if (!canManageMember(member)) {
+        alert('Kaliya qofka diiwaangeliyey ayaa tirtiri kara xubintan.');
+        return;
+    }
+
+    if (!confirm(`Ma hubtaa inaad tirtirto xubinta #${id}?`)) return;
+
+    const currentUser = getCurrentGymUser();
+    try {
+        const res = await fetch(`/api/members/${id}?requestedByUserId=${currentUser ? currentUser.id : ''}`, { method: 'DELETE' });
+        if (!res.ok) {
+            const text = await res.text();
+            throw new Error(text || 'Lama tirtiri karin xubinta.');
+        }
+        await loadMembers();
+    } catch (err) {
+        alert(err.message || 'Lama tirtiri karin xubinta.');
+    }
+}
+
+function openEditMemberModal(id) {
+    const m = allMembers.find(x => x.id === id);
+    if (!m) return;
+    if (!canManageMember(m)) {
+        alert('Kaliya qofka diiwaangeliyey ayaa wax ka bedeli kara xubintan.');
+        return;
+    }
+
+    const currentUser = getCurrentGymUser();
+    document.getElementById('editMemberId').value = m.id;
+    document.getElementById('editRequestedByUserId').value = currentUser ? currentUser.id : '';
+    document.getElementById('editMemberName').textContent = `${m.fullName}`;
+    document.getElementById('editRegisteredBy').textContent = m.createdByName || 'System';
+    document.getElementById('editFullName').value = m.fullName || '';
+    document.getElementById('editPhone').value = m.phone || '';
+    document.getElementById('editEmail').value = m.email || '';
+    document.getElementById('editGender').value = m.gender || 'Male';
+    document.getElementById('editAddress').value = m.address || '';
+    document.getElementById('editRegistrationDate').value = m.registrationDate || '';
+    document.getElementById('editExpiryDate').value = m.expiryDate || '';
+    document.getElementById('editEmergencyContact').value = m.emergencyContact || '';
+    document.getElementById('editNotes').value = m.notes || '';
+    document.getElementById('editMemberMessage').textContent = '';
+    document.getElementById('editMemberModal').classList.add('active');
+}
+
+function closeEditMemberModal() {
+    document.getElementById('editMemberModal').classList.remove('active');
+}
+
+async function submitMemberEdit(e) {
+    e.preventDefault();
+    const id = Number(document.getElementById('editMemberId').value);
+    const currentUser = getCurrentGymUser();
+    const form = document.getElementById('editMemberForm');
+    const msg = document.getElementById('editMemberMessage');
+
+    if (!currentUser) {
+        msg.textContent = 'Fadlan gal login-ka hore si aad wax uga bedesho.';
+        msg.style.color = '#dc2626';
+        return;
+    }
+
+    const payload = {
+        fullName: document.getElementById('editFullName').value.trim(),
+        email: document.getElementById('editEmail').value.trim() || null,
+        phone: document.getElementById('editPhone').value.trim(),
+        gender: document.getElementById('editGender').value,
+        address: document.getElementById('editAddress').value.trim(),
+        registrationDate: document.getElementById('editRegistrationDate').value || null,
+        expiryDate: document.getElementById('editExpiryDate').value || null,
+        emergencyContact: document.getElementById('editEmergencyContact').value.trim(),
+        notes: document.getElementById('editNotes').value.trim(),
+        requestedByUserId: Number(currentUser.id)
+    };
+
+    try {
+        const res = await fetch(`/api/members/${id}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        });
+
+        if (!res.ok) {
+            const errText = await res.text();
+            throw new Error(errText || 'Wax ka bedelka ma guuleysan');
+        }
+
+        msg.textContent = '✅ Wax ka bedelka si guul leh ayaa la dhammaystiray.';
+        msg.style.color = '#16a34a';
+        setTimeout(() => {
+            closeEditMemberModal();
+            loadMembers();
+        }, 800);
+    } catch (err) {
+        msg.textContent = '❌ ' + (err.message || 'Wax ka bedelka ma guuleysan');
+        msg.style.color = '#dc2626';
+    }
+}
+
+/* RENEWAL MODAL FUNCTIONS */
+function openRenewModal(id) {
+    const m = allMembers.find(x => x.id === id);
+    if (!m) return;
+    activeMemberForRenew = m;
+
+    document.getElementById('renewMemberId').value = m.id;
+    document.getElementById('renewMemberName').textContent = `#${m.id} - ${m.fullName}`;
+    document.getElementById('renewCurrentExpiry').textContent = m.expiryDate || 'Lama hayo';
+    document.getElementById('renewDuration').value = '30';
+    document.getElementById('renewAmount').value = '30.00';
+    document.getElementById('renewMsg').textContent = '';
+
+    updateRenewPreview();
+    document.getElementById('renewModal').classList.add('active');
+}
+
+function closeRenewModal() {
+    document.getElementById('renewModal').classList.remove('active');
+    activeMemberForRenew = null;
+}
+
+function updateRenewPreview() {
+    if (!activeMemberForRenew) return;
+    const durSelect = document.getElementById('renewDuration');
+    const days = parseInt(durSelect.value, 10);
+    const amount = durSelect.selectedOptions[0]?.getAttribute('data-amount') || '30.00';
+    document.getElementById('renewAmount').value = parseFloat(amount).toFixed(2);
+
+    const today = new Date();
+    const curExp = activeMemberForRenew.expiryDate ? new Date(activeMemberForRenew.expiryDate) : today;
+    const base = curExp > today ? curExp : today;
+
+    const newExp = new Date(base);
+    newExp.setDate(newExp.getDate() + days);
+
+    document.getElementById('renewNewExpiryPreview').textContent = `📅 Taariikhda Cusub: ${formatDateIso(newExp)} (+${days} Maalmood)`;
+}
+
+async function submitRenewal(e) {
+    e.preventDefault();
+    if (!activeMemberForRenew) return;
+
+    const btn = document.getElementById('renewSubmitBtn');
+    const msg = document.getElementById('renewMsg');
+    const days = parseInt(document.getElementById('renewDuration').value, 10);
+    const amount = parseFloat(document.getElementById('renewAmount').value) || 0;
+    const method = document.getElementById('renewPaymentMethod').value;
+    const notes = document.getElementById('renewNotes').value;
+
+    btn.disabled = true;
+    btn.textContent = 'Cusboonaysiinta ayaa socota...';
+
+    try {
+        const res = await fetch(`/api/members/${activeMemberForRenew.id}/renew`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                durationDays: days,
+                amount: amount,
+                paymentMethod: method,
+                notes: notes
+            })
+        });
+
+        if (!res.ok) throw new Error('Cusboonaysiintu ma suuroobin.');
+
+        const result = await res.json();
+        msg.textContent = `✅ ${result.message}`;
+        msg.style.color = '#16a34a';
+
+        setTimeout(() => {
+            closeRenewModal();
+            loadMembers();
+        }, 1200);
+    } catch (err) {
+        msg.textContent = '❌ ' + err.message;
+        msg.style.color = '#dc2626';
+    } finally {
+        btn.disabled = false;
+        btn.textContent = '🔄 Xaqiiji Cusboonaysiinta (Confirm Renewal)';
+    }
+}
+
+/* CARD MODAL FUNCTIONS */
+function openCardModal(id) {
+    const m = allMembers.find(x => x.id === id);
+    if (!m) return;
+
+    document.getElementById('cardName').textContent = m.fullName;
+    document.getElementById('cardId').textContent = `CG-${String(m.id).padStart(4, '0')}`;
+    document.getElementById('cardPhone').textContent = m.phone || '-';
+    document.getElementById('cardRegDate').textContent = m.registrationDate || '-';
+    document.getElementById('cardExpDate').textContent = m.expiryDate || '-';
+    document.getElementById('cardStatus').textContent = m.status === 'Active' ? '🟢 Active' : (m.status === 'Expiring Soon' ? '🟡 Expiring Soon' : '🔴 Expired');
+
+    document.getElementById('cardModal').classList.add('active');
+}
+
+function closeCardModal() {
+    document.getElementById('cardModal').classList.remove('active');
+}
+
+function escapeHtml(str) {
+    return String(str ?? '').replace(/[&<>"']/g, m => ({
+        '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;'
+    })[m]);
+}
+</script>

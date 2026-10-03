@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 700">
+  <rect width="1200" height="700" fill="#e0f2fe"/>
+  <rect x="180" y="180" width="840" height="240" rx="24" fill="#0f172a"/>
+  <rect x="220" y="220" width="220" height="160" rx="14" fill="#38bdf8"/>
+  <rect x="490" y="220" width="220" height="160" rx="14" fill="#8b5cf6"/>
+  <rect x="760" y="220" width="220" height="160" rx="14" fill="#22c55e"/>
+  <text x="600" y="560" text-anchor="middle" fill="#0f172a" font-family="Arial, sans-serif" font-size="50" font-weight="700">Attendance Records</text>
+</svg>

@@ -1,0 +1,1523 @@
+
+@page
+@{
+    ViewData["Title"] = "Trainers";
+}
+
+<style>
+
+    /* =========================================
+       TRAINER PAGE
+       ========================================= */
+
+    .trainers-page {
+        width: 100%;
+    }
+
+
+    /* =========================================
+       HERO
+       ========================================= */
+
+    .trainers-hero {
+        position: relative;
+        min-height: 240px;
+
+        margin-bottom: 24px;
+
+        display: flex;
+        align-items: center;
+
+        border-radius: 18px;
+
+        overflow: hidden;
+
+        background:
+            linear-gradient(
+                90deg,
+                rgba(8, 18, 35, 0.95),
+                rgba(8, 18, 35, 0.65),
+                rgba(8, 18, 35, 0.25)
+            ),
+            url("https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?auto=format&fit=crop&w=1600&q=85")
+            center / cover no-repeat;
+
+        box-shadow:
+            0 10px 30px rgba(0, 0, 0, 0.08);
+    }
+
+
+    .trainers-hero-content {
+        max-width: 700px;
+
+        padding: 38px 42px;
+
+        color: #ffffff;
+    }
+
+
+    .trainers-label {
+        display: block;
+
+        margin-bottom: 10px;
+
+        color: #4da3ff;
+
+        font-size: 12px;
+        font-weight: 700;
+
+        letter-spacing: 2px;
+    }
+
+
+    .trainers-hero h1 {
+        margin: 0 0 12px;
+
+        font-size: 35px;
+        font-weight: 800;
+    }
+
+
+    .trainers-hero p {
+        margin: 0;
+
+        color: #e5e7eb;
+
+        font-size: 14px;
+        line-height: 1.7;
+    }
+
+
+    /* =========================================
+       INFORMATION CARDS
+       ========================================= */
+
+    .trainer-info {
+        display: grid;
+
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+
+        gap: 20px;
+
+        margin-bottom: 24px;
+    }
+
+
+    .trainer-info-card {
+        position: relative;
+
+        min-height: 210px;
+
+        padding: 0;
+
+        overflow: hidden;
+
+        background: #ffffff;
+
+        border: 1px solid #e5e7eb;
+
+        border-radius: 16px;
+
+        cursor: pointer;
+
+        box-shadow:
+            0 5px 20px rgba(0, 0, 0, 0.045);
+
+        transition:
+            transform 0.25s ease,
+            box-shadow 0.25s ease;
+    }
+
+
+    .trainer-info-card:hover {
+        transform: translateY(-4px);
+
+        box-shadow:
+            0 14px 30px rgba(0, 0, 0, 0.10);
+    }
+
+
+    .trainer-card-image {
+        width: 100%;
+        height: 115px;
+
+        object-fit: cover;
+
+        display: block;
+    }
+
+
+    .trainer-card-content {
+        padding: 17px 19px;
+    }
+
+
+    .trainer-card-content h4 {
+        margin: 0 0 6px;
+
+        color: #111827;
+
+        font-size: 16px;
+        font-weight: 750;
+    }
+
+
+    .trainer-card-content p {
+        margin: 0;
+
+        color: #64748b;
+
+        font-size: 12px;
+        line-height: 1.6;
+    }
+
+
+    .trainer-card-arrow {
+        position: absolute;
+
+        right: 18px;
+        bottom: 18px;
+
+        width: 30px;
+        height: 30px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        border-radius: 50%;
+
+        background: #eff6ff;
+
+        color: #1683ff;
+
+        font-size: 16px;
+        font-weight: 700;
+    }
+
+
+    /* =========================================
+       PANEL
+       ========================================= */
+
+    .trainers-page .panel {
+        margin-bottom: 24px;
+
+        padding: 25px;
+
+        background: #ffffff;
+
+        border: 1px solid #e5e7eb;
+
+        border-radius: 16px;
+
+        box-shadow:
+            0 5px 20px rgba(0, 0, 0, 0.045);
+    }
+
+
+    /* =========================================
+       ADD TRAINER HEADER
+       ========================================= */
+
+    .trainer-panel-header {
+        display: flex;
+
+        align-items: center;
+
+        gap: 13px;
+
+        margin-bottom: 20px;
+    }
+
+
+    .trainer-panel-icon {
+        width: 44px;
+        height: 44px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        border-radius: 11px;
+
+        background: #eff6ff;
+
+        color: #1683ff;
+
+        font-size: 23px;
+        font-weight: 700;
+    }
+
+
+    .trainer-panel-header h3 {
+        margin: 0 0 4px;
+
+        color: #111827;
+
+        font-size: 20px;
+    }
+
+
+    .trainer-panel-header p {
+        margin: 0;
+
+        color: #64748b;
+
+        font-size: 12px;
+    }
+
+
+    /* =========================================
+       FORM
+       ========================================= */
+
+    .trainer-form {
+        display: grid;
+
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+
+        gap: 14px;
+    }
+
+
+    .trainer-form input {
+        width: 100%;
+        height: 48px;
+
+        box-sizing: border-box;
+
+        padding: 0 14px;
+
+        border: 1px solid #d6dde7;
+
+        border-radius: 9px;
+
+        background: #ffffff;
+
+        color: #111827;
+
+        font-family: inherit;
+        font-size: 14px;
+
+        outline: none;
+
+        transition:
+            border-color 0.2s ease,
+            box-shadow 0.2s ease;
+    }
+
+
+    .trainer-form input:focus {
+        border-color: #2588ff;
+
+        box-shadow:
+            0 0 0 3px rgba(37, 136, 255, 0.12);
+    }
+
+
+    .trainer-submit {
+        grid-column: span 2;
+
+        min-height: 45px;
+
+        border: none;
+
+        border-radius: 9px;
+
+        background: #16a34a;
+
+        color: #ffffff;
+
+        font-family: inherit;
+
+        font-size: 13px;
+        font-weight: 700;
+
+        cursor: pointer;
+
+        transition:
+            background 0.2s ease,
+            transform 0.2s ease;
+    }
+
+
+    .trainer-submit:hover {
+        background: #15803d;
+
+        transform: translateY(-1px);
+    }
+
+
+    /* =========================================
+       TRAINER TABLE
+       ========================================= */
+
+    .trainer-table-header {
+        margin-bottom: 18px;
+    }
+
+
+    .trainer-table-title {
+        display: flex;
+
+        align-items: center;
+
+        gap: 13px;
+    }
+
+
+    .trainer-table-icon {
+        width: 44px;
+        height: 44px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        border-radius: 11px;
+
+        background: #ecfdf3;
+
+        color: #16a34a;
+
+        font-size: 19px;
+        font-weight: 800;
+    }
+
+
+    .trainer-table-title h3 {
+        margin: 0 0 4px;
+
+        color: #111827;
+
+        font-size: 20px;
+    }
+
+
+    .trainer-table-title p {
+        margin: 0;
+
+        color: #64748b;
+
+        font-size: 12px;
+    }
+
+
+    .trainer-table-wrapper {
+        width: 100%;
+
+        overflow-x: auto;
+
+        border: 1px solid #e5e7eb;
+
+        border-radius: 11px;
+    }
+
+
+    .trainers-page table {
+        width: 100%;
+
+        border-collapse: collapse;
+    }
+
+
+    .trainers-page table thead {
+        background: #f8fafc;
+    }
+
+
+    .trainers-page table th {
+        padding: 15px;
+
+        text-align: left;
+
+        color: #475569;
+
+        font-size: 12px;
+        font-weight: 700;
+
+        text-transform: uppercase;
+
+        letter-spacing: 0.4px;
+
+        border-bottom: 1px solid #e5e7eb;
+
+        white-space: nowrap;
+    }
+
+
+    .trainers-page table td {
+        padding: 15px;
+
+        color: #475569;
+
+        font-size: 13px;
+
+        border-bottom: 1px solid #eef2f7;
+
+        white-space: nowrap;
+    }
+
+
+    .trainers-page table tbody tr:hover {
+        background: #f8fbff;
+    }
+
+
+    /* =========================================
+       TRAINER DETAILS MODAL
+       ========================================= */
+
+    .trainer-details-overlay {
+        position: fixed;
+
+        inset: 0;
+
+        z-index: 9999;
+
+        display: none;
+
+        align-items: center;
+        justify-content: center;
+
+        padding: 20px;
+
+        background:
+            rgba(15, 23, 42, 0.65);
+
+        backdrop-filter: blur(5px);
+    }
+
+
+    .trainer-details-overlay.show {
+        display: flex;
+    }
+
+
+    .trainer-details-modal {
+        width: 100%;
+        max-width: 850px;
+
+        max-height: 85vh;
+
+        overflow-y: auto;
+
+        background: #ffffff;
+
+        border-radius: 18px;
+
+        box-shadow:
+            0 25px 70px rgba(0, 0, 0, 0.25);
+    }
+
+
+    .trainer-details-header {
+        position: sticky;
+
+        top: 0;
+
+        z-index: 2;
+
+        display: flex;
+
+        align-items: center;
+        justify-content: space-between;
+
+        padding: 20px 24px;
+
+        background: #ffffff;
+
+        border-bottom: 1px solid #e5e7eb;
+    }
+
+
+    .trainer-details-header h3 {
+        margin: 0;
+
+        color: #111827;
+
+        font-size: 19px;
+    }
+
+
+    .trainer-close {
+        width: 36px;
+        height: 36px;
+
+        border: none;
+
+        border-radius: 50%;
+
+        background: #f1f5f9;
+
+        color: #334155;
+
+        font-size: 20px;
+
+        cursor: pointer;
+    }
+
+
+    .trainer-close:hover {
+        background: #e2e8f0;
+    }
+
+
+    .trainer-details-body {
+        padding: 22px;
+    }
+
+
+    /* =========================================
+       DETAILS CARDS
+       ========================================= */
+
+    .trainer-details-grid {
+        display: grid;
+
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+
+        gap: 15px;
+    }
+
+
+    .trainer-detail-card {
+        padding: 17px;
+
+        border: 1px solid #e5e7eb;
+
+        border-radius: 12px;
+
+        background: #f8fafc;
+    }
+
+
+    .trainer-detail-card h4 {
+        margin: 0 0 5px;
+
+        color: #111827;
+
+        font-size: 14px;
+    }
+
+
+    .trainer-detail-card p {
+        margin: 0;
+
+        color: #64748b;
+
+        font-size: 12px;
+    }
+
+
+    /* =========================================
+       SPECIALIZATION LIST
+       ========================================= */
+
+    .specialization-list {
+        display: grid;
+
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+
+        gap: 12px;
+    }
+
+
+    .specialization-item {
+        padding: 15px;
+
+        background: #ffffff;
+
+        border: 1px solid #e5e7eb;
+
+        border-radius: 11px;
+    }
+
+
+    .specialization-item strong {
+        display: block;
+
+        margin-bottom: 5px;
+
+        color: #111827;
+
+        font-size: 13px;
+    }
+
+
+    .specialization-item span {
+        color: #64748b;
+
+        font-size: 12px;
+    }
+
+
+    /* =========================================
+       RESPONSIVE
+       ========================================= */
+
+    @@media (max-width: 800px) {
+
+        .trainer-info {
+            grid-template-columns: 1fr;
+        }
+
+        .trainer-form {
+            grid-template-columns: 1fr;
+        }
+
+        .trainer-submit {
+            grid-column: span 1;
+        }
+
+        .trainer-details-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .specialization-list {
+            grid-template-columns: 1fr;
+        }
+
+    }
+
+
+    @@media (max-width: 600px) {
+
+        .trainers-hero {
+            min-height: 250px;
+        }
+
+        .trainers-hero-content {
+            padding: 27px;
+        }
+
+        .trainers-hero h1 {
+            font-size: 28px;
+        }
+
+        .trainers-page .panel {
+            padding: 18px;
+        }
+
+    }
+
+</style>
+
+
+<div class="trainers-page">
+
+
+    <!-- =========================================
+         HERO
+         ========================================= -->
+
+    <div class="trainers-hero">
+
+        <div class="trainers-hero-content">
+
+            <span class="trainers-label">
+                COMFORT GYM MANAGEMENT SYSTEM
+            </span>
+
+            <h1>
+                Trainer Management
+            </h1>
+
+            <p>
+                Manage professional trainers, their contact
+                information and areas of specialization to
+                support effective fitness programs at Comfort Gym.
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <!-- =========================================
+         INFORMATION CARDS
+         ========================================= -->
+
+    <div class="trainer-info">
+
+
+        <!-- PROFESSIONAL TRAINERS -->
+
+        <div
+            class="trainer-info-card"
+            onclick="showTrainerInformation()"
+        >
+
+            <img
+                class="trainer-card-image"
+                src="https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?auto=format&fit=crop&w=900&q=85"
+                alt="Professional Fitness Trainer"
+            />
+
+
+            <div class="trainer-card-content">
+
+                <h4>
+                    Professional Trainers
+                </h4>
+
+                <p>
+                    Click here to view all registered trainers,
+                    their contact information and professional details.
+                </p>
+
+            </div>
+
+
+            <div class="trainer-card-arrow">
+                →
+            </div>
+
+        </div>
+
+
+        <!-- SPECIALIZATIONS -->
+
+        <div
+            class="trainer-info-card"
+            onclick="showSpecializations()"
+        >
+
+            <img
+                class="trainer-card-image"
+                src="https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&w=900&q=85"
+                alt="Gym Training Specialization"
+            />
+
+
+            <div class="trainer-card-content">
+
+                <h4>
+                    Specializations
+                </h4>
+
+                <p>
+                    Click here to view trainer specializations
+                    such as fitness, cardio and strength training.
+                </p>
+
+            </div>
+
+
+            <div class="trainer-card-arrow">
+                →
+            </div>
+
+        </div>
+
+
+    </div>
+
+
+    <!-- =========================================
+         ADD TRAINER
+         ========================================= -->
+
+    <div class="panel">
+
+        <div class="trainer-panel-header">
+
+            <div class="trainer-panel-icon">
+                +
+            </div>
+
+            <div>
+
+                <h3>
+                    Add New Trainer
+                </h3>
+
+                <p>
+                    Enter the trainer's professional information below.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <form
+            class="trainer-form"
+            onsubmit="addTrainer(event)"
+        >
+
+            <input
+                name="fullName"
+                placeholder="Full name"
+                required
+            />
+
+
+            <input
+                name="email"
+                type="email"
+                placeholder="Email address"
+            />
+
+
+            <input
+                name="phone"
+                placeholder="Phone number"
+            />
+
+
+            <input
+                name="specialization"
+                placeholder="Specialization"
+            />
+
+
+            <button
+                type="submit"
+                class="trainer-submit"
+            >
+                + Add Trainer
+            </button>
+
+        </form>
+
+    </div>
+
+
+    <!-- =========================================
+         TRAINER LIST
+         ========================================= -->
+
+    <div class="panel">
+
+        <div class="trainer-table-header">
+
+            <div class="trainer-table-title">
+
+                <div class="trainer-table-icon">
+                    ✓
+                </div>
+
+                <div>
+
+                    <h3>
+                        Trainer Directory
+                    </h3>
+
+                    <p>
+                        Registered trainers and their professional details
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="trainer-table-wrapper">
+
+            <table>
+
+                <thead>
+
+                    <tr>
+
+                        <th>
+                            ID
+                        </th>
+
+                        <th>
+                            Name
+                        </th>
+
+                        <th>
+                            Email
+                        </th>
+
+                        <th>
+                            Phone
+                        </th>
+
+                        <th>
+                            Specialization
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody id="trainersRows">
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+
+</div>
+
+
+<!-- =========================================
+     TRAINER INFORMATION MODAL
+     ========================================= -->
+
+<div
+    id="trainerDetailsOverlay"
+    class="trainer-details-overlay"
+    onclick="closeTrainerDetails(event)"
+>
+
+
+    <div
+        class="trainer-details-modal"
+        onclick="event.stopPropagation()"
+    >
+
+
+        <div class="trainer-details-header">
+
+            <h3 id="trainerDetailsTitle">
+                Trainer Information
+            </h3>
+
+
+            <button
+                type="button"
+                class="trainer-close"
+                onclick="closeTrainerDetails()"
+            >
+                ×
+            </button>
+
+        </div>
+
+
+        <div
+            id="trainerDetailsBody"
+            class="trainer-details-body"
+        >
+
+            Loading trainer information...
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<script>
+
+    /* =========================================
+       SHOW PROFESSIONAL TRAINERS
+       ========================================= */
+
+    async function showTrainerInformation() {
+
+        const overlay =
+            document.getElementById(
+                "trainerDetailsOverlay"
+            );
+
+        const title =
+            document.getElementById(
+                "trainerDetailsTitle"
+            );
+
+        const body =
+            document.getElementById(
+                "trainerDetailsBody"
+            );
+
+
+        title.textContent =
+            "Professional Trainers";
+
+
+        body.innerHTML = `
+
+            <p style="
+                color:#64748b;
+                font-size:13px;
+            ">
+                Loading trainers...
+            </p>
+
+        `;
+
+
+        overlay.classList.add(
+            "show"
+        );
+
+
+        try {
+
+            const response =
+                await fetch(
+                    "/api/trainers"
+                );
+
+
+            if (!response.ok) {
+
+                throw new Error(
+                    "Unable to load trainers."
+                );
+
+            }
+
+
+            const trainers =
+                await response.json();
+
+
+            if (
+                !trainers ||
+                trainers.length === 0
+            ) {
+
+                body.innerHTML = `
+
+                    <p style="
+                        color:#64748b;
+                        font-size:13px;
+                    ">
+                        No trainers registered yet.
+                    </p>
+
+                `;
+
+                return;
+            }
+
+
+            body.innerHTML = `
+
+                <div class="trainer-details-grid">
+
+                    ${trainers
+                        .map(
+                            trainer => `
+
+                                <div class="trainer-detail-card">
+
+                                    <h4>
+                                        ${escapeTrainerHtml(
+                                            trainer.fullName ??
+                                            trainer.FullName ??
+                                            "Unknown Trainer"
+                                        )}
+                                    </h4>
+
+                                    <p>
+                                        Email:
+                                        ${escapeTrainerHtml(
+                                            trainer.email ??
+                                            trainer.Email ??
+                                            "-"
+                                        )}
+                                    </p>
+
+                                    <p style="margin-top:5px;">
+
+                                        Phone:
+                                        ${escapeTrainerHtml(
+                                            trainer.phone ??
+                                            trainer.Phone ??
+                                            "-"
+                                        )}
+
+                                    </p>
+
+                                </div>
+
+                            `
+                        )
+                        .join("")}
+
+                </div>
+
+            `;
+
+        }
+        catch (error) {
+
+            console.error(
+                error
+            );
+
+
+            body.innerHTML = `
+
+                <p style="
+                    color:#dc2626;
+                    font-size:13px;
+                ">
+                    Unable to load trainer information.
+                </p>
+
+            `;
+
+        }
+
+    }
+
+
+    /* =========================================
+       SHOW SPECIALIZATIONS
+       ========================================= */
+
+    async function showSpecializations() {
+
+        const overlay =
+            document.getElementById(
+                "trainerDetailsOverlay"
+            );
+
+        const title =
+            document.getElementById(
+                "trainerDetailsTitle"
+            );
+
+        const body =
+            document.getElementById(
+                "trainerDetailsBody"
+            );
+
+
+        title.textContent =
+            "Trainer Specializations";
+
+
+        body.innerHTML = `
+
+            <p style="
+                color:#64748b;
+                font-size:13px;
+            ">
+                Loading specializations...
+            </p>
+
+        `;
+
+
+        overlay.classList.add(
+            "show"
+        );
+
+
+        try {
+
+            const response =
+                await fetch(
+                    "/api/trainers"
+                );
+
+
+            if (!response.ok) {
+
+                throw new Error(
+                    "Unable to load trainers."
+                );
+
+            }
+
+
+            const trainers =
+                await response.json();
+
+
+            if (
+                !trainers ||
+                trainers.length === 0
+            ) {
+
+                body.innerHTML = `
+
+                    <p style="
+                        color:#64748b;
+                        font-size:13px;
+                    ">
+                        No trainer specialization data available.
+                    </p>
+
+                `;
+
+                return;
+            }
+
+
+            body.innerHTML = `
+
+                <div class="specialization-list">
+
+                    ${trainers
+                        .map(
+                            trainer => `
+
+                                <div
+                                    class="specialization-item"
+                                >
+
+                                    <strong>
+
+                                        ${escapeTrainerHtml(
+                                            trainer.fullName ??
+                                            trainer.FullName ??
+                                            "Unknown Trainer"
+                                        )}
+
+                                    </strong>
+
+
+                                    <span>
+
+                                        ${
+                                            escapeTrainerHtml(
+                                                trainer.specialization ??
+                                                trainer.Specialization ??
+                                                "No specialization recorded"
+                                            )
+                                        }
+
+                                    </span>
+
+                                </div>
+
+                            `
+                        )
+                        .join("")}
+
+                </div>
+
+            `;
+
+        }
+        catch (error) {
+
+            console.error(
+                error
+            );
+
+
+            body.innerHTML = `
+
+                <p style="
+                    color:#dc2626;
+                    font-size:13px;
+                ">
+                    Unable to load specialization information.
+                </p>
+
+            `;
+
+        }
+
+    }
+
+
+    /* =========================================
+       CLOSE MODAL
+       ========================================= */
+
+    function closeTrainerDetails(
+        event
+    ) {
+
+        if (
+            event &&
+            event.target !==
+            event.currentTarget
+        ) {
+
+            return;
+
+        }
+
+
+        const overlay =
+            document.getElementById(
+                "trainerDetailsOverlay"
+            );
+
+
+        overlay.classList.remove(
+            "show"
+        );
+
+    }
+
+
+    /* =========================================
+       ESCAPE HTML
+       ========================================= */
+
+    function escapeTrainerHtml(
+        value
+    ) {
+
+        return String(value)
+            .replaceAll(
+                "&",
+                "&amp;"
+            )
+            .replaceAll(
+                "<",
+                "&lt;"
+            )
+            .replaceAll(
+                ">",
+                "&gt;"
+            )
+            .replaceAll(
+                '"',
+                "&quot;"
+            )
+            .replaceAll(
+                "'",
+                "&#039;"
+            );
+
+    }
+
+
+    async function loadTrainers() {
+
+        const tbody = document.getElementById("trainersRows");
+
+        if (!tbody) {
+            return;
+        }
+
+        tbody.innerHTML = `
+            <tr>
+                <td colspan="5" style="text-align:center; color:#64748b; padding:24px;">
+                    Loading trainers...
+                </td>
+            </tr>
+        `;
+
+        try {
+
+            const response = await fetch("/api/trainers");
+
+            if (!response.ok) {
+                throw new Error("Unable to load trainers.");
+            }
+
+            const trainers = await response.json();
+            const rows = Array.isArray(trainers) ? trainers : [];
+
+            if (rows.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="5" style="text-align:center; color:#64748b; padding:24px;">
+                            No trainers registered yet.
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
+            tbody.innerHTML = rows.map(trainer => `
+                <tr>
+                    <td><strong>#${trainer.id ?? "-"}</strong></td>
+                    <td>${escapeTrainerHtml(trainer.fullName ?? trainer.FullName ?? "-")}</td>
+                    <td>${escapeTrainerHtml(trainer.email ?? trainer.Email ?? "-")}</td>
+                    <td>${escapeTrainerHtml(trainer.phone ?? trainer.Phone ?? "-")}</td>
+                    <td>${escapeTrainerHtml(trainer.specialization ?? trainer.Specialization ?? "General Fitness")}</td>
+                </tr>
+            `).join("");
+
+        }
+        catch (error) {
+            console.error(error);
+            tbody.innerHTML = `
+                <tr>
+                    <td colspan="5" style="text-align:center; color:#dc2626; padding:24px;">
+                        Failed to load trainers.
+                    </td>
+                </tr>
+            `;
+        }
+    }
+
+    async function addTrainer(event) {
+
+        event.preventDefault();
+
+        const form = event.target;
+        const fullName = form.fullName.value.trim();
+        const email = form.email.value.trim();
+        const phone = form.phone.value.trim();
+        const specialization = form.specialization.value.trim();
+
+        if (!fullName) {
+            alert("Full name is required.");
+            return;
+        }
+
+        try {
+
+            const response = await fetch("/api/trainers", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    fullName,
+                    email: email || "",
+                    phone: phone || "",
+                    specialization: specialization || "General Fitness"
+                })
+            });
+
+            if (!response.ok) {
+                const errorText = await response.text();
+                throw new Error(errorText || "Unable to add trainer.");
+            }
+
+            form.reset();
+            await loadTrainers();
+
+        }
+        catch (error) {
+            console.error(error);
+            alert(error.message || "Unable to add trainer.");
+        }
+    }
+
+    /* =========================================
+       ESC KEY
+       ========================================= */
+
+    document.addEventListener(
+        "keydown",
+        function(event) {
+
+            if (
+                event.key ===
+                "Escape"
+            ) {
+
+                closeTrainerDetails();
+
+            }
+
+        }
+    );
+
+    document.addEventListener("DOMContentLoaded", loadTrainers);
+
+</script>

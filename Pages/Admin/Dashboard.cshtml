@@ -1,0 +1,349 @@
+@page
+@{
+    ViewData["Title"] = "Dashboard";
+}
+
+<div class="dashboard-container">
+    <!-- HERO SECTION -->
+    <div class="gym-hero">
+        <div class="gym-hero-content">
+            <span class="gym-hero-label">COMFORT GYM MANAGEMENT SYSTEM</span>
+            <h1>Ku Soo Dhawoow Comfort Gym</h1>
+            <p>
+                Xarunta maamulka guud ee jimicsiga: la soco xubnaha firfircoon, muddo-dhaca bille (monthly expiration), xaadirinta maanta, iyo dakhliga guud.
+            </p>
+        </div>
+    </div>
+
+    <!-- QUICK ACTIONS BAR -->
+    <div class="quick-actions-bar">
+        <a href="/Admin/Members" class="qbtn green">➕ Diiwaangeli Xubin Cusub</a>
+        <a href="/Admin/Payments" class="qbtn purple">💳 Qaado Lacag-bixin (Payment)</a>
+        <a href="/Admin/Classes" class="qbtn orange">🏋️ Fasallada & Tababarada</a>
+    </div>
+
+    <!-- KPI STATS CARDS -->
+    <div class="cards">
+        <div class="card">
+            <div class="card-icon icon-blue">👥</div>
+            <small>Wadarta Xubnaha</small>
+            <h2 id="dashTotalMembers">0</h2>
+        </div>
+
+        <div class="card">
+            <div class="card-icon icon-green">🟢</div>
+            <small>Xubnaha Shaqaynaya (Active)</small>
+            <h2 id="dashActiveMembers">0</h2>
+        </div>
+
+        <div class="card">
+            <div class="card-icon icon-orange">⚠️</div>
+            <small>Dhawaan Dhacaya (&le; 7 Maalmood)</small>
+            <h2 id="dashExpiringSoon">0</h2>
+        </div>
+
+        <div class="card">
+            <div class="card-icon icon-red">🔴</div>
+            <small>Muddadii ka Dhacday (Expired)</small>
+            <h2 id="dashExpiredMembers">0</h2>
+        </div>
+
+        <div class="card">
+            <div class="card-icon icon-purple">💵</div>
+            <small>Dakhliga Bishan</small>
+            <h2 id="dashMonthlyIncome">$0.00</h2>
+        </div>
+
+    </div>
+
+    <!-- MAIN TWO COLUMNS WIDGETS -->
+    <div class="dashboard-grid">
+        <!-- LEFT: EXPIRING SOON & EXPIRED MEMBERS -->
+        <div class="panel">
+            <div class="panel-header">
+                <div>
+                    <span class="panel-subtitle">DIGNIIN & LA SOCODKA (MEMBERSHIP ALERTS)</span>
+                    <h3>Xubnaha Dhici Raba ama Dhacay</h3>
+                </div>
+                <a href="/Admin/Members" class="panel-link">Eeg Dhammaan →</a>
+            </div>
+
+            <div class="dash-table-wrap">
+                <table class="dash-table">
+                    <thead>
+                        <tr>
+                            <th>Xubinta</th>
+                            <th>Dhicitaanka</th>
+                            <th>Xaaladda</th>
+                            <th>Ficil</th>
+                        </tr>
+                    </thead>
+                    <tbody id="dashExpiringRows">
+                        <tr><td colspan="4" class="text-center py-4">Xogta ayaa la soo gelinayaa...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- RIGHT: RECENT MEMBERS -->
+        <div class="panel">
+            <div class="panel-header" style="margin-bottom:12px;">
+                <div>
+                    <span class="panel-subtitle">DIIWAANGELINTII UGU DAMBAYSAY</span>
+                    <h4>Xubnihii ugu Dambeeyey ee Bille ku Biiray</h4>
+                </div>
+            </div>
+
+            <div class="dash-table-wrap">
+                <table class="dash-table">
+                    <thead>
+                        <tr>
+                            <th>ID & Magaca</th>
+                            <th>Diiwaangelinta</th>
+                            <th>Dhicitaanka</th>
+                        </tr>
+                    </thead>
+                    <tbody id="dashRecentRows">
+                        <tr><td colspan="3" class="text-center py-4">Xogta ayaa la soo gelinayaa...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.dashboard-container { width: 100%; }
+.gym-hero {
+    position: relative;
+    width: 100%;
+    min-height: 200px;
+    margin-bottom: 20px;
+    border-radius: 16px;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    background: linear-gradient(90deg, #0b1329 0%, #1e293b 100%);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+}
+.gym-hero-content {
+    padding: 35px 40px;
+    color: white;
+}
+.gym-hero-label {
+    display: inline-block;
+    margin-bottom: 8px;
+    color: #60a5fa;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 2px;
+}
+.gym-hero h1 { margin: 0 0 10px; font-size: 32px; font-weight: 800; }
+.gym-hero p { margin: 0; color: #cbd5e1; font-size: 14px; max-width: 650px; line-height: 1.6; }
+
+/* QUICK ACTIONS */
+.quick-actions-bar {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-bottom: 22px;
+}
+.qbtn {
+    padding: 11px 18px;
+    border-radius: 9px;
+    color: white;
+    font-weight: 700;
+    font-size: 13px;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    border: none;
+    cursor: pointer;
+    transition: opacity 0.2s;
+}
+.qbtn.green { background: #16a34a; }
+.qbtn.blue { background: #2563eb; }
+.qbtn.purple { background: #7c3aed; }
+.qbtn.orange { background: #ea580c; }
+.qbtn:hover { opacity: 0.9; }
+
+/* CARDS */
+.cards {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 14px;
+    margin-bottom: 25px;
+}
+.card {
+    background: white;
+    padding: 16px 18px;
+    border-radius: 14px;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+    transition: transform 0.2s ease;
+}
+.card:hover { transform: translateY(-3px); }
+.card-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    margin-bottom: 10px;
+}
+.icon-blue { background: #eff6ff; }
+.icon-green { background: #ecfdf5; }
+.icon-orange { background: #fff7ed; }
+.icon-red { background: #fef2f2; }
+.icon-purple { background: #f5f3ff; }
+.icon-cyan { background: #ecfeff; }
+.card small { font-size: 11px; font-weight: 700; color: #64748b; display: block; margin-bottom: 4px; }
+.card h2 { margin: 0; font-size: 22px; font-weight: 800; color: #0f172a; }
+
+/* GRID */
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: 1.2fr 1fr;
+    gap: 20px;
+}
+.panel-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+.panel-subtitle {
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 1px;
+    color: #2563eb;
+    display: block;
+}
+.panel-header h3, .panel-header h4 { margin: 4px 0 0; color: #0f172a; }
+.panel-link { color: #2563eb; font-size: 12px; font-weight: 800; text-decoration: none; }
+
+/* TABLE */
+.dash-table-wrap { width: 100%; overflow-x: auto; }
+.dash-table { width: 100%; border-collapse: collapse; }
+.dash-table th {
+    padding: 10px 8px;
+    background: #f8fafc;
+    border-bottom: 1px solid #e2e8f0;
+    font-size: 11px;
+    font-weight: 800;
+    color: #475569;
+    text-align: left;
+}
+.dash-table td {
+    padding: 10px 8px;
+    border-bottom: 1px solid #f1f5f9;
+    font-size: 12px;
+    color: #334155;
+}
+
+/* QUICK CHECKIN */
+.quick-checkin-box {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 12px;
+}
+.qinput {
+    flex: 1;
+    padding: 10px 14px;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    font-size: 13px;
+}
+.checkin-alert {
+    padding: 10px 14px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 700;
+    display: none;
+}
+.checkin-alert.success { display: block; background: #ecfdf5; color: #15803d; border: 1px solid #a7f3d0; }
+.checkin-alert.danger { display: block; background: #fef2f2; color: #b91c1c; border: 1px solid #fecaca; }
+
+@@media (max-width: 1024px) {
+    .cards { grid-template-columns: repeat(3, 1fr); }
+    .dashboard-grid { grid-template-columns: 1fr; }
+}
+@@media (max-width: 640px) {
+    .cards { grid-template-columns: repeat(2, 1fr); }
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', loadDashboardData);
+
+async function loadDashboardData() {
+    try {
+        const res = await fetch('/api/dashboard');
+        if (!res.ok) throw new Error('Failed to load dashboard');
+        const d = await res.json();
+
+        document.getElementById('dashTotalMembers').textContent = d.members;
+        document.getElementById('dashActiveMembers').textContent = d.activeMembers;
+        document.getElementById('dashExpiringSoon').textContent = d.expiringSoon;
+        document.getElementById('dashExpiredMembers').textContent = d.expiredMembers;
+        document.getElementById('dashMonthlyIncome').textContent = '$' + Number(d.monthlyIncome).toFixed(2);
+
+        // Render Expiring & Expired Table
+        const expTbody = document.getElementById('dashExpiringRows');
+        if (expTbody) {
+            if (!d.expiringMembers || d.expiringMembers.length === 0) {
+                expTbody.innerHTML = `<tr><td colspan="4" style="text-align:center; padding:20px; color:#15803d;">🎉 Ma jiraan xubno dhacaya ama dhacay usbuucan!</td></tr>`;
+            } else {
+                expTbody.innerHTML = d.expiringMembers.map(m => {
+                    const isExp = m.status === 'Expired';
+                    return `
+                        <tr>
+                            <td>
+                                <strong>${escapeHtml(m.fullName)}</strong>
+                                <div style="font-size:10px; color:#64748b;">#${m.id} • ${escapeHtml(m.phone || '-')}</div>
+                            </td>
+                            <td><span style="font-weight:700; color:${isExp ? '#dc2626' : '#ea580c'}">${m.expiryDate}</span></td>
+                            <td>
+                                <span style="font-size:10px; font-weight:800; padding:2px 7px; border-radius:10px; background:${isExp ? '#fee2e2; color:#dc2626' : '#fef3c7; color:#b45309'}">
+                                    ${isExp ? '🔴 Expired' : '🟡 Soon'}
+                                </span>
+                            </td>
+                            <td>
+                                <a href="/Admin/Members" style="background:#2563eb; color:white; padding:4px 8px; border-radius:5px; text-decoration:none; font-size:11px; font-weight:800;">
+                                    🔄 Renew
+                                </a>
+                            </td>
+                        </tr>
+                    `;
+                }).join('');
+            }
+        }
+
+        // Render Recent Members
+        const recTbody = document.getElementById('dashRecentRows');
+        if (recTbody) {
+            if (!d.recentMembers || d.recentMembers.length === 0) {
+                recTbody.innerHTML = `<tr><td colspan="3" style="text-align:center; padding:15px; color:#64748b;">Xubno ma jiraan.</td></tr>`;
+            } else {
+                recTbody.innerHTML = d.recentMembers.map(m => `
+                    <tr>
+                        <td><strong>#${m.id}</strong> ${escapeHtml(m.fullName)}</td>
+                        <td>${m.registrationDate}</td>
+                        <td><strong style="color:#2563eb;">${m.expiryDate}</strong></td>
+                    </tr>
+                `).join('');
+            }
+        }
+    } catch (err) {
+        console.error(err);
+    }
+}
+
+function escapeHtml(str) {
+    return String(str ?? '').replace(/[&<>"']/g, m => ({
+        '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;'
+    })[m]);
+}
+</script>

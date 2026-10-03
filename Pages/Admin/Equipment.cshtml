@@ -1,0 +1,1687 @@
+﻿@page
+@{
+    ViewData["Title"] = "Equipment";
+}
+
+<div class="equipment-page">
+
+    <!-- HERO -->
+    <section class="equipment-hero">
+
+        <div class="equipment-hero-overlay"></div>
+
+        <div class="equipment-hero-content">
+
+            <span class="equipment-label">
+                COMFORT GYM MANAGEMENT SYSTEM
+            </span>
+
+            <h1>
+                Gym Equipment
+            </h1>
+
+            <p>
+                Manage gym equipment inventory with item names,
+                quantities and active or inactive status.
+            </p>
+
+            <div class="equipment-hero-actions">
+
+                <button type="button"
+                        class="equipment-add-btn"
+                        onclick="openEquipmentModal()">
+
+                    <span>+</span>
+                    Add Equipment
+
+                </button>
+
+                <button type="button"
+                        class="equipment-refresh-hero"
+                        onclick="loadEquipment()">
+
+                    â†» Refresh
+
+                </button>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- INFORMATION CARDS -->
+    <section class="equipment-info-section">
+
+        <div class="equipment-info-card">
+
+            <div class="equipment-info-image">
+
+                <img src="/images/equipment-inventory.svg"
+                     alt="Equipment Inventory">
+
+            </div>
+
+            <div class="equipment-info-content">
+
+                <span>01</span>
+
+                <h4>
+                    Equipment Inventory
+                </h4>
+
+                <p>
+                    Keep an organized record of all equipment
+                    available inside the gym.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="equipment-info-card">
+
+            <div class="equipment-info-image">
+
+                <img src="/images/equipment-condition.svg"
+                     alt="Equipment Condition">
+
+            </div>
+
+            <div class="equipment-info-content">
+
+                <span>02</span>
+
+                <h4>
+                    Equipment Status
+                </h4>
+
+                <p>
+                    Track which items are active and which are
+                    temporarily inactive in the gym.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="equipment-info-card">
+
+            <div class="equipment-info-image">
+
+                <img src="/images/equipment-management.svg"
+                     alt="Equipment Management">
+
+            </div>
+
+            <div class="equipment-info-content">
+
+                <span>03</span>
+
+                <h4>
+                    Inventory Control
+                </h4>
+
+                <p>
+                    Keep a simple record of equipment quantity and
+                    current availability for daily operations.
+                </p>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- MANAGEMENT PANEL -->
+    <section class="equipment-management-panel">
+
+        <div class="equipment-panel-header">
+
+            <div class="equipment-panel-title">
+
+                <div class="equipment-panel-image">
+
+                    <img src="/images/equipment-panel.svg"
+                         alt="Equipment Management">
+
+                </div>
+
+                <div>
+
+                    <h3>
+                        Equipment Management
+                    </h3>
+
+                    <p>
+                        View and manage all registered gym equipment.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="equipment-panel-actions">
+
+                <button type="button"
+                        class="equipment-refresh-btn"
+                        onclick="loadEquipment()">
+
+                    â†» Refresh Equipment
+
+                </button>
+
+                <button type="button"
+                        class="equipment-panel-add-btn"
+                        onclick="openEquipmentModal()">
+
+                    + Add Equipment
+
+                </button>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- EQUIPMENT DIRECTORY -->
+    <section class="equipment-directory">
+
+        <div class="equipment-table-header">
+
+            <div>
+
+                <h3>
+                    Equipment Directory
+                </h3>
+
+                <p>
+                    Registered gym equipment and current status
+                </p>
+
+            </div>
+
+            <div class="equipment-live-status">
+
+                <span></span>
+
+                Live Data
+
+            </div>
+
+        </div>
+
+
+        <div class="equipment-table-wrapper">
+
+            <table class="equipment-table">
+
+                <thead>
+
+                    <tr>
+
+                        <th>
+                            Equipment
+                        </th>
+
+                        <th>
+                            Quantity
+                        </th>
+
+                        <th>
+                            Status
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody id="equipmentRows">
+
+                    <tr>
+
+                        <td colspan="3"
+                            class="equipment-loading">
+
+                            Loading equipment...
+
+                        </td>
+
+                    </tr>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </section>
+
+</div>
+
+
+<!-- =====================================================
+     ADD EQUIPMENT MODAL
+====================================================== -->
+
+<div id="equipmentModal"
+     class="equipment-modal">
+
+    <div class="equipment-modal-overlay"
+         onclick="closeEquipmentModal()">
+    </div>
+
+
+    <div class="equipment-modal-box">
+
+        <div class="equipment-modal-header">
+
+            <div>
+
+                <span>
+                    COMFORT GYM MANAGEMENT SYSTEM
+                </span>
+
+                <h2>
+                    Add New Equipment
+                </h2>
+
+                <p>
+                    Register new gym equipment in the system.
+                </p>
+
+            </div>
+
+
+            <button type="button"
+                    class="equipment-modal-close"
+                    onclick="closeEquipmentModal()">
+
+                Ã—
+
+            </button>
+
+        </div>
+
+
+        <form id="equipmentForm"
+              onsubmit="addEquipment(event)">
+
+            <div class="equipment-form-grid">
+
+
+                <!-- NAME -->
+
+                <div class="equipment-form-group">
+
+                    <label>
+                        Equipment Name
+                    </label>
+
+                    <input type="text"
+                           id="equipmentName"
+                           placeholder="e.g. Treadmill"
+                           required>
+
+                </div>
+
+
+                <!-- QUANTITY -->
+
+                <div class="equipment-form-group">
+
+                    <label>
+                        Quantity
+                    </label>
+
+                    <input type="number"
+                           id="equipmentQuantity"
+                           min="1"
+                           placeholder="e.g. 5"
+                           required>
+
+                </div>
+
+                <!-- STATUS -->
+
+                <div class="equipment-form-group">
+
+                    <label>
+                        Status
+                    </label>
+
+                    <select id="equipmentStatus">
+                        <option value="Active" selected>Active</option>
+                        <option value="Inactive">Inactive</option>
+                    </select>
+
+                </div>
+
+            </div>
+
+
+            <div id="equipmentMessage"
+                 class="equipment-message">
+            </div>
+
+
+            <div class="equipment-form-actions">
+
+                <button type="button"
+                        class="equipment-cancel-btn"
+                        onclick="closeEquipmentModal()">
+
+                    Cancel
+
+                </button>
+
+                <button type="submit"
+                        id="saveEquipmentBtn"
+                        class="equipment-save-btn">
+
+                    âœ“ Save Equipment
+
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+
+<style>
+
+    * {
+        box-sizing: border-box;
+    }
+
+
+    .equipment-page {
+        width: 100%;
+        min-height: 100vh;
+        padding-bottom: 50px;
+        background: #f5f7fa;
+    }
+
+
+    /* =====================================================
+       HERO
+    ====================================================== */
+
+    .equipment-hero {
+        position: relative;
+        min-height: 410px;
+
+        display: flex;
+        align-items: center;
+
+        overflow: hidden;
+
+        background-image:
+            url('/images/equipment-hero.svg');
+
+        background-size: cover;
+        background-position: center;
+    }
+
+    .equipment-hero-overlay {
+        position: absolute;
+        inset: 0;
+
+        background:
+            linear-gradient(
+                90deg,
+                rgba(7,15,27,.94),
+                rgba(7,15,27,.68),
+                rgba(7,15,27,.25)
+            );
+    }
+
+    .equipment-hero-content {
+        position: relative;
+        z-index: 2;
+
+        max-width: 820px;
+        padding: 75px 7%;
+
+        color: white;
+    }
+
+    .equipment-label {
+        display: inline-block;
+
+        padding: 8px 15px;
+        margin-bottom: 18px;
+
+        border: 1px solid rgba(255,255,255,.35);
+        border-radius: 30px;
+
+        font-size: 11px;
+        font-weight: 800;
+        letter-spacing: 1.5px;
+    }
+
+    .equipment-hero h1 {
+        margin: 0 0 15px;
+
+        font-size: 52px;
+        font-weight: 800;
+        line-height: 1.1;
+    }
+
+    .equipment-hero p {
+        max-width: 670px;
+
+        margin: 0;
+
+        color: rgba(255,255,255,.84);
+
+        font-size: 17px;
+        line-height: 1.8;
+    }
+
+
+    /* HERO BUTTONS */
+
+    .equipment-hero-actions {
+        display: flex;
+        gap: 12px;
+        margin-top: 28px;
+    }
+
+    .equipment-add-btn,
+    .equipment-refresh-hero {
+        border: none;
+        border-radius: 9px;
+
+        padding: 13px 20px;
+
+        font-size: 14px;
+        font-weight: 700;
+
+        cursor: pointer;
+
+        transition: .25s;
+    }
+
+    .equipment-add-btn {
+        background: #1d3557;
+        color: white;
+    }
+
+    .equipment-add-btn:hover {
+        background: #0d2349;
+        transform: translateY(-2px);
+    }
+
+    .equipment-refresh-hero {
+        background: rgba(255,255,255,.12);
+
+        border: 1px solid rgba(255,255,255,.3);
+
+        color: white;
+    }
+
+    .equipment-refresh-hero:hover {
+        background: rgba(255,255,255,.22);
+    }
+
+
+    /* =====================================================
+       INFO CARDS
+    ====================================================== */
+
+    .equipment-info-section {
+        display: grid;
+
+        grid-template-columns:
+            repeat(3, 1fr);
+
+        gap: 22px;
+
+        padding: 35px 7%;
+    }
+
+    .equipment-info-card {
+        overflow: hidden;
+
+        background: white;
+
+        border: 1px solid #e7eaf0;
+        border-radius: 16px;
+
+        box-shadow:
+            0 8px 25px rgba(15,23,42,.06);
+
+        transition: .3s;
+    }
+
+    .equipment-info-card:hover {
+        transform: translateY(-7px);
+
+        box-shadow:
+            0 18px 38px rgba(15,23,42,.12);
+    }
+
+    .equipment-info-image {
+        width: 100%;
+        height: 175px;
+        overflow: hidden;
+    }
+
+    .equipment-info-image img {
+        width: 100%;
+        height: 100%;
+
+        object-fit: cover;
+
+        transition: .4s;
+    }
+
+    .equipment-info-card:hover
+    .equipment-info-image img {
+        transform: scale(1.07);
+    }
+
+    .equipment-info-content {
+        padding: 22px;
+    }
+
+    .equipment-info-content span {
+        color: #1d3557;
+
+        font-size: 12px;
+        font-weight: 800;
+    }
+
+    .equipment-info-content h4 {
+        margin: 7px 0 8px;
+
+        color: #182230;
+
+        font-size: 20px;
+    }
+
+    .equipment-info-content p {
+        margin: 0;
+
+        color: #6b7280;
+
+        font-size: 14px;
+
+        line-height: 1.7;
+    }
+
+
+    /* =====================================================
+       MANAGEMENT PANEL
+    ====================================================== */
+
+    .equipment-management-panel,
+    .equipment-directory {
+        margin: 0 7% 20px;
+
+        background: white;
+
+        border: 1px solid #e5e7eb;
+        border-radius: 16px;
+
+        box-shadow:
+            0 8px 28px rgba(15,23,42,.05);
+
+        overflow: hidden;
+    }
+
+    .equipment-panel-header {
+        display: flex;
+
+        justify-content: space-between;
+        align-items: center;
+
+        padding: 24px 28px;
+    }
+
+    .equipment-panel-title {
+        display: flex;
+
+        align-items: center;
+
+        gap: 15px;
+    }
+
+    .equipment-panel-image {
+        width: 58px;
+        height: 58px;
+
+        overflow: hidden;
+
+        border-radius: 13px;
+    }
+
+    .equipment-panel-image img {
+        width: 100%;
+        height: 100%;
+
+        object-fit: cover;
+    }
+
+    .equipment-panel-title h3 {
+        margin: 0 0 5px;
+
+        color: #172033;
+
+        font-size: 20px;
+    }
+
+    .equipment-panel-title p {
+        margin: 0;
+
+        color: #8992a3;
+
+        font-size: 13px;
+    }
+
+    .equipment-panel-actions {
+        display: flex;
+        gap: 10px;
+    }
+
+    .equipment-refresh-btn,
+    .equipment-panel-add-btn {
+        border: none;
+
+        padding: 11px 16px;
+
+        border-radius: 8px;
+
+        cursor: pointer;
+
+        font-size: 13px;
+        font-weight: 700;
+    }
+
+    .equipment-refresh-btn {
+        background: #f1f3f6;
+        color: #384152;
+    }
+
+    .equipment-panel-add-btn {
+        background: #1d3557;
+        color: white;
+    }
+
+    .equipment-panel-add-btn:hover {
+        background: #0d2349;
+    }
+
+
+    /* =====================================================
+       TABLE
+    ====================================================== */
+
+    .equipment-table-header {
+        display: flex;
+
+        justify-content: space-between;
+        align-items: center;
+
+        padding: 25px 28px 18px;
+    }
+
+    .equipment-table-header h3 {
+        margin: 0 0 5px;
+
+        color: #1c2636;
+
+        font-size: 19px;
+    }
+
+    .equipment-table-header p {
+        margin: 0;
+
+        color: #8992a3;
+
+        font-size: 13px;
+    }
+
+    .equipment-live-status {
+        display: flex;
+
+        align-items: center;
+        gap: 7px;
+
+        padding: 8px 12px;
+
+        border-radius: 30px;
+
+        background: #ecfdf3;
+
+        color: #18864b;
+
+        font-size: 12px;
+        font-weight: 700;
+    }
+
+    .equipment-live-status span {
+        width: 8px;
+        height: 8px;
+
+        border-radius: 50%;
+
+        background: #22c55e;
+    }
+
+    .equipment-table-wrapper {
+        width: 100%;
+        overflow-x: auto;
+    }
+
+    .equipment-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    .equipment-table th {
+        padding: 15px 22px;
+
+        background: #f8fafc;
+
+        text-align: left;
+
+        color: #697386;
+
+        font-size: 11px;
+
+        text-transform: uppercase;
+        letter-spacing: .6px;
+    }
+
+    .equipment-table td {
+        padding: 17px 22px;
+
+        border-top: 1px solid #edf0f4;
+
+        color: #374151;
+
+        font-size: 14px;
+    }
+
+    .equipment-status-select {
+        min-width: 120px;
+        padding: 8px 10px;
+        border: 1px solid #dfe5ec;
+        border-radius: 8px;
+        background: #fff;
+        color: #1f2937;
+        font-size: 13px;
+        font-weight: 600;
+    }
+
+    .equipment-table tbody tr:hover {
+        background: #fafbfc;
+    }
+
+    .equipment-item {
+        display: flex;
+
+        align-items: center;
+
+        gap: 11px;
+    }
+
+    .equipment-item-image {
+        width: 44px;
+        height: 44px;
+
+        overflow: hidden;
+
+        border-radius: 9px;
+
+        background: #f1f5f9;
+    }
+
+    .equipment-item-image img {
+        width: 100%;
+        height: 100%;
+
+        object-fit: cover;
+    }
+
+    .equipment-item strong {
+        display: block;
+
+        color: #263244;
+    }
+
+    .equipment-item small {
+        display: block;
+
+        margin-top: 3px;
+
+        color: #98a1af;
+
+        font-size: 11px;
+    }
+
+    .equipment-id {
+        padding: 5px 9px;
+
+        border-radius: 6px;
+
+        background: #f1f5f9;
+
+        color: #475569;
+
+        font-size: 12px;
+
+        font-weight: 700;
+    }
+
+    .equipment-active {
+        display: inline-block;
+
+        padding: 6px 10px;
+
+        border-radius: 20px;
+
+        background: #ecfdf3;
+
+        color: #15803d;
+
+        font-size: 11px;
+
+        font-weight: 800;
+    }
+
+    .equipment-loading {
+        text-align: center !important;
+
+        padding: 45px !important;
+
+        color: #8b95a5 !important;
+    }
+
+
+    /* =====================================================
+       MODAL
+    ====================================================== */
+
+    .equipment-modal {
+        position: fixed;
+
+        inset: 0;
+
+        z-index: 99999;
+
+        display: none;
+
+        align-items: center;
+        justify-content: center;
+
+        padding: 20px;
+    }
+
+    .equipment-modal.active {
+        display: flex;
+    }
+
+    .equipment-modal-overlay {
+        position: absolute;
+
+        inset: 0;
+
+        background: rgba(15,23,42,.68);
+
+        backdrop-filter: blur(5px);
+    }
+
+    .equipment-modal-box {
+        position: relative;
+
+        z-index: 2;
+
+        width: 100%;
+        max-width: 700px;
+
+        max-height: 90vh;
+
+        overflow-y: auto;
+
+        background: white;
+
+        border-radius: 18px;
+
+        box-shadow:
+            0 30px 80px rgba(0,0,0,.25);
+    }
+
+    .equipment-modal-header {
+        display: flex;
+
+        justify-content: space-between;
+
+        padding: 26px 28px;
+
+        border-bottom: 1px solid #edf0f4;
+    }
+
+    .equipment-modal-header span {
+        color: #1d3557;
+
+        font-size: 10px;
+
+        font-weight: 800;
+
+        letter-spacing: 1.2px;
+    }
+
+    .equipment-modal-header h2 {
+        margin: 6px 0;
+
+        color: #172033;
+
+        font-size: 25px;
+    }
+
+    .equipment-modal-header p {
+        margin: 0;
+
+        color: #8992a3;
+
+        font-size: 13px;
+    }
+
+    .equipment-modal-close {
+        width: 38px;
+        height: 38px;
+
+        border: none;
+
+        border-radius: 50%;
+
+        background: #f2f4f7;
+
+        color: #475467;
+
+        font-size: 25px;
+
+        cursor: pointer;
+    }
+
+    .equipment-modal-close:hover {
+        background: #fee2e2;
+        color: #dc2626;
+    }
+
+
+    /* =====================================================
+       FORM
+    ====================================================== */
+
+    #equipmentForm {
+        padding: 28px;
+    }
+
+    .equipment-form-grid {
+        display: grid;
+
+        grid-template-columns:
+            repeat(2, 1fr);
+
+        gap: 18px;
+    }
+
+    .equipment-form-group {
+        display: flex;
+
+        flex-direction: column;
+
+        gap: 7px;
+    }
+
+    .equipment-form-group.full-width {
+        grid-column: 1 / -1;
+    }
+
+    .equipment-form-group label {
+        color: #344054;
+
+        font-size: 13px;
+
+        font-weight: 700;
+    }
+
+    .equipment-form-group input,
+    .equipment-form-group select,
+    .equipment-form-group textarea {
+        width: 100%;
+
+        padding: 12px 13px;
+
+        border: 1px solid #d9dee7;
+
+        border-radius: 8px;
+
+        outline: none;
+
+        background: white;
+
+        color: #344054;
+
+        font-size: 14px;
+
+        font-family: inherit;
+    }
+
+    .equipment-form-group textarea {
+        resize: vertical;
+    }
+
+    .equipment-form-group input:focus,
+    .equipment-form-group select:focus,
+    .equipment-form-group textarea:focus {
+        border-color: #1d3557;
+
+        box-shadow:
+            0 0 0 3px rgba(29,53,87,.10);
+    }
+
+
+    /* MESSAGE */
+
+    .equipment-message {
+        display: none;
+
+        margin-top: 18px;
+
+        padding: 12px;
+
+        border-radius: 8px;
+
+        font-size: 13px;
+    }
+
+    .equipment-message.success {
+        display: block;
+
+        background: #ecfdf3;
+
+        color: #15803d;
+    }
+
+    .equipment-message.error {
+        display: block;
+
+        background: #fef2f2;
+
+        color: #dc2626;
+    }
+
+
+    /* FORM BUTTONS */
+
+    .equipment-form-actions {
+        display: flex;
+
+        justify-content: flex-end;
+
+        gap: 10px;
+
+        margin-top: 25px;
+
+        padding-top: 20px;
+
+        border-top: 1px solid #edf0f4;
+    }
+
+    .equipment-cancel-btn,
+    .equipment-save-btn {
+        border: none;
+
+        padding: 12px 20px;
+
+        border-radius: 8px;
+
+        cursor: pointer;
+
+        font-size: 13px;
+
+        font-weight: 700;
+    }
+
+    .equipment-cancel-btn {
+        background: #f2f4f7;
+
+        color: #344054;
+    }
+
+    .equipment-save-btn {
+        background: #1d3557;
+
+        color: white;
+    }
+
+    .equipment-save-btn:hover {
+        background: #0d2349;
+    }
+
+
+    /* =====================================================
+       RESPONSIVE
+    ====================================================== */
+
+    @@media (max-width: 950px) {
+
+        .equipment-info-section {
+            grid-template-columns: 1fr;
+        }
+
+        .equipment-panel-header {
+            flex-direction: column;
+
+            align-items: flex-start;
+
+            gap: 20px;
+        }
+
+        .equipment-panel-actions {
+            width: 100%;
+        }
+
+    }
+
+
+    @@media (max-width: 650px) {
+
+        .equipment-hero-content {
+            padding: 55px 25px;
+        }
+
+        .equipment-hero h1 {
+            font-size: 36px;
+        }
+
+        .equipment-hero p {
+            font-size: 14px;
+        }
+
+        .equipment-hero-actions {
+            flex-direction: column;
+        }
+
+        .equipment-info-section {
+            padding: 25px;
+        }
+
+        .equipment-management-panel,
+        .equipment-directory {
+            margin-left: 25px;
+            margin-right: 25px;
+        }
+
+        .equipment-form-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .equipment-form-group.full-width {
+            grid-column: auto;
+        }
+
+        .equipment-panel-actions {
+            flex-direction: column;
+        }
+
+        .equipment-table-header {
+            flex-direction: column;
+
+            align-items: flex-start;
+
+            gap: 15px;
+        }
+
+    }
+
+</style>
+
+
+<script>
+
+    /* =====================================================
+       LOAD EQUIPMENT
+    ====================================================== */
+
+    async function loadEquipment() {
+
+        const tbody =
+            document.getElementById(
+                "equipmentRows"
+            );
+
+
+        tbody.innerHTML = `
+            <tr>
+                <td colspan="3"
+                    class="equipment-loading">
+
+                    Loading equipment...
+
+                </td>
+            </tr>
+        `;
+
+
+        try {
+
+            const response =
+                await fetch(
+                    "/api/equipment"
+                );
+
+
+            if (!response.ok) {
+
+                throw new Error(
+                    "Unable to load equipment."
+                );
+
+            }
+
+
+            const equipment =
+                await response.json();
+
+
+            if (!equipment ||
+                equipment.length === 0) {
+
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="3"
+                            class="equipment-loading">
+
+                            No equipment has been registered yet.
+
+                        </td>
+                    </tr>
+                `;
+
+                return;
+            }
+
+
+            tbody.innerHTML =
+                equipment
+                    .map(renderEquipment)
+                    .join("");
+
+        }
+        catch (error) {
+
+            console.error(error);
+
+
+            tbody.innerHTML = `
+                <tr>
+                    <td colspan="3"
+                        class="equipment-loading">
+
+                        Unable to load equipment.
+                        Please try again.
+
+                    </td>
+                </tr>
+            `;
+
+        }
+
+    }
+
+
+    /* =====================================================
+       RENDER EQUIPMENT
+    ====================================================== */
+
+    function renderEquipment(item) {
+
+        const id = item.id ?? "";
+        const name = item.name ?? item.equipmentName ?? "Unknown Equipment";
+        const quantity = item.quantity ?? 0;
+        const status = item.status ?? "Active";
+
+        return `
+
+            <tr>
+
+                <td>
+
+                    <div class="equipment-item">
+
+                        <div class="equipment-item-image">
+
+                            <img
+                                src="/images/equipment-item.svg"
+                                alt="Equipment">
+
+                        </div>
+
+                        <div>
+
+                            <strong>
+                                ${esc(name)}
+                            </strong>
+
+                            <small>
+                                Gym Equipment
+                            </small>
+
+                        </div>
+
+                    </div>
+
+                </td>
+
+                <td>
+                    ${esc(quantity)}
+                </td>
+
+                <td>
+                    <select class="equipment-status-select" data-equipment-id="${esc(id)}" aria-label="Equipment status for ${esc(name)}">
+                        <option value="Active" ${status === "Active" ? "selected" : ""}>Active</option>
+                        <option value="Inactive" ${status === "Inactive" ? "selected" : ""}>Inactive</option>
+                    </select>
+                </td>
+
+            </tr>
+
+        `;
+
+    }
+
+
+    document.addEventListener("change", async function (event) {
+        const target = event.target;
+        if (!(target instanceof HTMLSelectElement) || !target.classList.contains("equipment-status-select")) {
+            return;
+        }
+
+        const equipmentId = target.dataset.equipmentId;
+        if (!equipmentId) {
+            return;
+        }
+
+        const nextStatus = target.value;
+
+        try {
+            const response = await fetch(`/api/equipment/${equipmentId}`, {
+                method: "PUT",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ id: Number(equipmentId), name: "", quantity: 0, status: nextStatus })
+            });
+
+            if (!response.ok) {
+                throw new Error("Unable to update equipment status.");
+            }
+
+            await loadEquipment();
+        } catch (error) {
+            console.error(error);
+            alert("Unable to update equipment status.");
+            await loadEquipment();
+        }
+    });
+
+    /* =====================================================
+       ADD EQUIPMENT
+    ====================================================== */
+
+    async function addEquipment(event) {
+
+        event.preventDefault();
+
+
+        const message =
+            document.getElementById(
+                "equipmentMessage"
+            );
+
+
+        const saveButton =
+            document.getElementById(
+                "saveEquipmentBtn"
+            );
+
+
+        const equipmentData = {
+
+            name:
+                document
+                    .getElementById(
+                        "equipmentName"
+                    )
+                    .value
+                    .trim(),
+
+            quantity:
+                Number(
+                    document
+                        .getElementById(
+                            "equipmentQuantity"
+                        )
+                        .value
+                ),
+
+            status:
+                document
+                    .getElementById(
+                        "equipmentStatus"
+                    )
+                    .value
+
+        };
+
+
+        saveButton.disabled = true;
+
+        saveButton.innerHTML =
+            "Saving...";
+
+
+        try {
+
+            const response =
+                await fetch(
+                    "/api/equipment",
+                    {
+                        method: "POST",
+
+                        headers: {
+                            "Content-Type":
+                                "application/json"
+                        },
+
+                        body:
+                            JSON.stringify(
+                                equipmentData
+                            )
+                    }
+                );
+
+
+            if (!response.ok) {
+
+                const errorText =
+                    await response.text();
+
+
+                throw new Error(
+                    errorText ||
+                    "Equipment could not be saved."
+                );
+
+            }
+
+
+            message.className =
+                "equipment-message success";
+
+
+            message.textContent =
+                "âœ“ Equipment added successfully.";
+
+
+            document
+                .getElementById(
+                    "equipmentForm"
+                )
+                .reset();
+
+
+            /*
+             * Immediately refresh table
+             */
+
+            await loadEquipment();
+
+
+            setTimeout(
+                closeEquipmentModal,
+                1000
+            );
+
+        }
+        catch (error) {
+
+            console.error(error);
+
+
+            message.className =
+                "equipment-message error";
+
+
+            message.textContent =
+                "Unable to save equipment. Please check the API and try again.";
+
+        }
+        finally {
+
+            saveButton.disabled = false;
+
+            saveButton.innerHTML =
+                "âœ“ Save Equipment";
+
+        }
+
+    }
+
+
+    /* =====================================================
+       OPEN MODAL
+    ====================================================== */
+
+    function openEquipmentModal() {
+
+        document
+            .getElementById(
+                "equipmentModal"
+            )
+            .classList
+            .add("active");
+
+
+        document.body.style.overflow =
+            "hidden";
+
+    }
+
+
+    /* =====================================================
+       CLOSE MODAL
+    ====================================================== */
+
+    function closeEquipmentModal() {
+
+        document
+            .getElementById(
+                "equipmentModal"
+            )
+            .classList
+            .remove("active");
+
+
+        document.body.style.overflow =
+            "";
+
+
+        const message =
+            document.getElementById(
+                "equipmentMessage"
+            );
+
+
+        message.className =
+            "equipment-message";
+
+
+        message.textContent =
+            "";
+
+    }
+
+
+    /* =====================================================
+       ESCAPE HTML
+    ====================================================== */
+
+    function esc(value) {
+
+        return String(value)
+
+            .replaceAll(
+                "&",
+                "&amp;"
+            )
+
+            .replaceAll(
+                "<",
+                "&lt;"
+            )
+
+            .replaceAll(
+                ">",
+                "&gt;"
+            )
+
+            .replaceAll(
+                '"',
+                "&quot;"
+            )
+
+            .replaceAll(
+                "'",
+                "&#039;"
+            );
+
+    }
+
+
+    /* =====================================================
+       LOAD WHEN PAGE OPENS
+    ====================================================== */
+
+    document.addEventListener(
+        "DOMContentLoaded",
+        loadEquipment
+    );
+
+</script>

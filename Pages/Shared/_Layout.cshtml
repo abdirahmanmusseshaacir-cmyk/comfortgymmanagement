@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>@ViewData["Title"] - Comfort Gym</title>
+<link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+<div class="app">
+<aside class="sidebar">
+  <div class="brand">COMFORT <span>GYM</span></div>
+  <a href="/Admin/Dashboard">Dashboard</a>
+  <a href="/Admin/Members">Members</a>
+  <a href="/Admin/Trainers">Trainers</a>
+  <a href="/Admin/Memberships">Memberships</a>
+  <a href="/Admin/Classes">Classes</a>
+  <a href="/Admin/Payments">Payments</a>
+  <a href="/Admin/Equipment">Equipment</a>
+  <a href="/Admin/Reports">Reports</a>
+  <hr>
+  <a href="/Account/Login">Logout</a>
+</aside>
+<main class="main">
+<header class="topbar"><h2>@ViewData["Title"]</h2><span>Comfort Gym Management System</span></header>
+<section class="content">@RenderBody()</section>
+</main>
+</div>
+<script src="/js/app.js"></script>
+@await RenderSectionAsync("Scripts", required:false)
+</body>
+</html>

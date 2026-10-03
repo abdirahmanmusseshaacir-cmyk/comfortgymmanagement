@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 700">
+  <defs>
+    <linearGradient id="e2" x1="0" x2="1">
+      <stop offset="0%" stop-color="#a78bfa"/>
+      <stop offset="100%" stop-color="#0f172a"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="700" fill="url(#e2)"/>
+  <rect x="200" y="260" width="760" height="160" rx="22" fill="rgba(255,255,255,0.14)"/>
+  <text x="600" y="240" text-anchor="middle" fill="#ffffff" font-family="Arial, sans-serif" font-size="52" font-weight="700">Equipment Condition</text>
+  <text x="600" y="470" text-anchor="middle" fill="#f5f3ff" font-family="Arial, sans-serif" font-size="28">Maintenance Tracking</text>
+</svg>

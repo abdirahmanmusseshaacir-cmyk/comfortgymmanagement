@@ -1,0 +1,5 @@
+@page
+@{ Layout=null; }
+<!doctype html><html><head><meta charset="utf-8"><link rel="stylesheet" href="/css/style.css"><title>Register</title></head><body><div class="login"><h1>Create Account</h1>
+<form id="f" class="form"><input name="fullName" placeholder="Full Name" required><input name="email" type="email" placeholder="Email" required><input name="password" type="password" placeholder="Password" required><select name="role"><option>Member</option><option>Trainer</option><option>Admin</option></select><button class="btn">Register</button></form><div id="msg"></div></div>
+<script>f.onsubmit=async e=>{e.preventDefault();let x=e.target;let r=await fetch('/api/auth/register',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({fullName:x.fullName.value,email:x.email.value,password:x.password.value,role:x.role.value})});msg.innerHTML=r.ok?'<div class="notice successbox">Registered. <a href="/Account/Login">Login</a></div>':'<div class="notice error">Registration failed</div>'}</script></body></html>

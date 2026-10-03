@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 700">
+  <defs>
+    <linearGradient id="g4" x1="0" x2="1">
+      <stop offset="0%" stop-color="#0f172a"/>
+      <stop offset="100%" stop-color="#ff7f50"/>
+    </linearGradient>
+  </defs>
+  <rect width="1600" height="700" fill="url(#g4)"/>
+  <circle cx="250" cy="170" r="120" fill="rgba(255,255,255,0.10)"/>
+  <circle cx="1250" cy="180" r="140" fill="rgba(255,255,255,0.08)"/>
+  <rect x="230" y="250" width="1140" height="200" rx="26" fill="rgba(15,23,42,0.35)"/>
+  <text x="800" y="320" text-anchor="middle" fill="#ffffff" font-family="Arial, sans-serif" font-size="66" font-weight="800">Fitness Classes</text>
+  <text x="800" y="390" text-anchor="middle" fill="#e2e8f0" font-family="Arial, sans-serif" font-size="30">Comfort Gym Management System</text>
+</svg>
