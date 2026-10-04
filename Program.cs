@@ -37,7 +37,19 @@ app.UseRouting();
 // Ensure DB created and seed sample data
 using (var scope = app.Services.CreateScope())
 {
-    // Ensure DB created safely without crashing startup
+    // Ensure DB created safely without cra // Ensure DB created safely without naming conflict
+try
+{
+    using (var dbScope = app.Services.CreateScope())
+    {
+        var db = dbScope.ServiceProvider.GetRequiredService<GymDbContext>();
+        db.Database.EnsureCreated();
+    }
+}
+catch (Exception)
+{
+    // Ignores temporary DB startup lag on Railway
+}shing startup
 try
 {
     using (var scope = app.Services.CreateScope())
