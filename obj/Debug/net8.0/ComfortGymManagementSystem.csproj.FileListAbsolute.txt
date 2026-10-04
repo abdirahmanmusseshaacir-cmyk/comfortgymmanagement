@@ -42,3 +42,8 @@ C:\Users\Admin\Downloads\ComfortGymManagementSystem\bin\Debug\net8.0\ComfortGymM
 C:\Users\Admin\Downloads\ComfortGymManagementSystem\obj\Debug\net8.0\ComfortGymManagementSystem.genruntimeconfig.cache
 C:\Users\Admin\Downloads\ComfortGymManagementSystem\obj\Debug\net8.0\ref\ComfortGymManagementSystem.dll
 C:\Users\Admin\Downloads\ComfortGymManagementSystem\obj\Debug\net8.0\ComfortGymManagementSystem.sourcelink.json
+C:\Users\Admin\Downloads\ComfortGymManagementSystem\bin\Debug\net8.0\publish\web.config
+C:\Users\Admin\Downloads\ComfortGymManagementSystem\bin\Debug\net8.0\publish\appsettings.json
+C:\Users\Admin\Downloads\ComfortGymManagementSystem\bin\Debug\net8.0\publish\ComfortGymManagementSystem.deps.json
+C:\Users\Admin\Downloads\ComfortGymManagementSystem\bin\Debug\net8.0\publish\ComfortGymManagementSystem.runtimeconfig.json
+C:\Users\Admin\Downloads\ComfortGymManagementSystem\bin\Debug\net8.0\publish\ComfortGymManagementSystem.staticwebassets.endpoints.json

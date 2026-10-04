@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 700">
+  <defs>
+    <linearGradient id="g3" x1="0" x2="1">
+      <stop offset="0%" stop-color="#22c55e"/>
+      <stop offset="100%" stop-color="#0f172a"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="700" fill="url(#g3)"/>
+  <rect x="200" y="180" width="180" height="280" rx="16" fill="rgba(255,255,255,0.16)"/>
+  <rect x="430" y="120" width="180" height="340" rx="16" fill="rgba(255,255,255,0.18)"/>
+  <rect x="660" y="220" width="180" height="240" rx="16" fill="rgba(255,255,255,0.20)"/>
+  <text x="600" y="560" text-anchor="middle" fill="#ffffff" font-family="Arial, sans-serif" font-size="52" font-weight="700">Capacity Management</text>
+</svg>

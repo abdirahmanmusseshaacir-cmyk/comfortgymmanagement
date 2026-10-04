@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("ComfortGymManagementSystem")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+a6ec87dbf0a6467a5c503f1d276c0779c0582edf")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+305d9cd9d85f02b5892db63481e7c88189170f30")]
 [assembly: System.Reflection.AssemblyProductAttribute("ComfortGymManagementSystem")]
 [assembly: System.Reflection.AssemblyTitleAttribute("ComfortGymManagementSystem")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
