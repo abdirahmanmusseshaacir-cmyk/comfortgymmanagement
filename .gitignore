@@ -1,0 +1,12 @@
+## .NET / ASP.NET Core build output
+bin/
+obj/
+publish/
+
+## Visual Studio / user files
+.vs/
+*.user
+
+## Rider / VS Code
+.idea/
+.vscode/

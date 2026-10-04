@@ -1,8 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 700">
-  <rect width="1200" height="700" fill="#0f172a"/>
-  <rect x="180" y="180" width="840" height="300" rx="24" fill="#1e293b"/>
-  <rect x="240" y="240" width="180" height="180" rx="16" fill="#f59e0b" fill-opacity="0.9"/>
-  <rect x="470" y="240" width="180" height="180" rx="16" fill="#22c55e" fill-opacity="0.9"/>
-  <rect x="700" y="240" width="180" height="180" rx="16" fill="#38bdf8" fill-opacity="0.9"/>
-  <text x="600" y="560" text-anchor="middle" fill="#ffffff" font-family="Arial, sans-serif" font-size="48" font-weight="700">Gym Equipment</text>
-</svg>
