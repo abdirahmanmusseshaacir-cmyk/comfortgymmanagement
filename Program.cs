@@ -5,6 +5,13 @@ using System.ComponentModel.DataAnnotations;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Listen on the port provided by the hosting platform (e.g. Railway sets PORT).
+var port = Environment.GetEnvironmentVariable("PORT");
+if (!string.IsNullOrWhiteSpace(port))
+{
+    builder.WebHost.UseUrls($"http://0.0.0.0:{port}");
+}
+
 var cs = builder.Configuration.GetConnectionString("DefaultConnection")
     ?? "Server=localhost;Port=3306;Database=ComfortGymDB;User=root;Password=;";
 
@@ -19,7 +26,11 @@ if (!app.Environment.IsDevelopment())
     app.UseExceptionHandler("/Error");
     app.UseHsts();
 }
-app.UseHttpsRedirection();
+if (app.Environment.IsDevelopment())
+{
+    // Only redirect to HTTPS locally; Railway terminates TLS in front of the app.
+    app.UseHttpsRedirection();
+}
 app.UseStaticFiles();
 app.UseRouting();
 
