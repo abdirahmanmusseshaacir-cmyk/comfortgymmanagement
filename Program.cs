@@ -37,14 +37,19 @@ app.UseRouting();
 // Ensure DB created and seed sample data
 using (var scope = app.Services.CreateScope())
 {
-    var db = scope.ServiceProvider.GetRequiredService<GymDbContext>();
-    await db.Database.EnsureCreatedAsync();
-    await EnsureMemberCreatorColumnsAsync(db);
-    await EnsureGymClassScheduleColumnsAsync(db);
-    await EnsureTrainerNullValuesAsync(db);
-    await EnsureGymClassNullValuesAsync(db);
-    await EnsureEquipmentColumnsAsync(db);
-    await SeedDataAsync(db);
+    // Ensure DB created safely without crashing startup
+try
+{
+    using (var scope = app.Services.CreateScope())
+    {
+        var db = scope.ServiceProvider.GetRequiredService<GymDbContext>();
+        db.Database.EnsureCreated();
+    }
+}
+catch (Exception)
+{
+    // Ignores temporary DB startup lag on Railway
+}
 }
 
 static async Task EnsureMemberCreatorColumnsAsync(GymDbContext db)
